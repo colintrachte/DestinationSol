@@ -35,9 +35,11 @@ import org.terasology.nui.widgets.UIButton;
  */
 public class BuyItemsScreen extends InventoryOperationsScreen {
     private final UIButton[] actionButtons = new UIButton[1];
+    private SolApplication solApplication;
 
     @Override
     public void initialise(SolApplication solApplication, InventoryScreen inventoryScreen) {
+        this.solApplication = solApplication;
         UIWarnButton buyButton = new UIWarnButton();
         buyButton.setText("Buy");
         buyButton.setKey(GDXInputUtil.GDXToNuiKey(solApplication.getOptions().getKeyBuyItem()));
@@ -51,9 +53,10 @@ public class BuyItemsScreen extends InventoryOperationsScreen {
                 return;
             }
 
+            float priceMul = target.getTradeContainer().getPriceMultiplier();
             target.getTradeContainer().getItems().remove(selectedItem);
             hero.getItemContainer().add(selectedItem);
-            hero.setMoney(hero.getMoney() - selectedItem.getPrice());
+            hero.setMoney(hero.getMoney() - selectedItem.getPrice() * priceMul);
             solApplication.getGame().getFactionMan().reportEvent(hero.getFaction(), target.getFaction(), DefaultReputationEvent.BOUGHT_ITEM);
 
             inventoryScreen.updateItemRows();
@@ -64,6 +67,19 @@ public class BuyItemsScreen extends InventoryOperationsScreen {
     @Override
     public ItemContainer getItems(SolGame game) {
         return game.getScreens().talkScreen.getTarget().getTradeContainer().getItems();
+    }
+
+    @Override
+    public float getPriceMul() {
+        if (solApplication == null) {
+            return 1f;
+        }
+        SolGame game = solApplication.getGame();
+        if (game == null) {
+            return 1f;
+        }
+        SolShip target = game.getScreens().talkScreen.getTarget();
+        return target == null ? 1f : target.getTradeContainer().getPriceMultiplier();
     }
 
     @Override
@@ -90,7 +106,8 @@ public class BuyItemsScreen extends InventoryOperationsScreen {
             return;
         }
         SolItem selItem = inventoryScreen.getSelectedItem();
-        boolean enabled = selItem != null && hero.getMoney() >= selItem.getPrice() && hero.getItemContainer().canAdd(selItem);
+        float priceMul = talkScreen.getTarget().getTradeContainer().getPriceMultiplier();
+        boolean enabled = selItem != null && hero.getMoney() >= selItem.getPrice() * priceMul && hero.getItemContainer().canAdd(selItem);
         UIButton buyButton = actionButtons[0];
         buyButton.setText(enabled ? "Buy" : "---");
         buyButton.setEnabled(enabled);

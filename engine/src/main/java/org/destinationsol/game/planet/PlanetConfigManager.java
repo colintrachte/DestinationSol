@@ -106,6 +106,12 @@ public class PlanetConfigManager {
      */
     public PlanetConfig getRandom(boolean easy, boolean hard) {
         List<PlanetConfig> cfg = easy ? this.easy : hard ? this.hard : medium;
+        if (cfg.isEmpty()) {
+            cfg = medium;
+        }
+        if (cfg.isEmpty()) {
+            cfg = new ArrayList<>(allConfigs.values());
+        }
         return SolRandom.seededRandomElement(cfg);
     }
 

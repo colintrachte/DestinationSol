@@ -217,7 +217,11 @@ public class Projectile implements SolObject {
             game.getPartMan().blinks(position, game, config.collisionEffectBackground.size);
         }
         if (ship.getPilot().isPlayer() && obstacle instanceof SolShip) {
-            game.getFactionMan().reportEvent(ship.getFaction(), ((SolShip) obstacle).getFaction(), DefaultReputationEvent.DAMAGED_SHIP);
+            SolShip target = (SolShip) obstacle;
+            game.getFactionMan().reportEvent(ship.getFaction(), target.getFaction(), DefaultReputationEvent.DAMAGED_SHIP, config.dmg);
+            if (target.getHull().life <= 0) {
+                game.getFactionMan().reportKill(ship.getFaction(), target.getFaction());
+            }
         }
 
         game.getSoundManager().play(game, config.collisionSound, null, this);

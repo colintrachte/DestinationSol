@@ -25,6 +25,7 @@ import org.destinationsol.game.drawables.Drawable;
 import org.destinationsol.game.faction.Faction;
 import org.destinationsol.game.input.Pilot;
 import org.destinationsol.game.particle.DSParticleEmitter;
+import org.destinationsol.game.ship.hulls.HullConfig;
 
 import java.util.List;
 
@@ -55,6 +56,9 @@ public class ForceBeacon {
                 continue;
             }
             SolShip ship = (SolShip) o;
+            if (ship.getHull().config.getType() == HullConfig.Type.STATION) {
+                continue;
+            }
             Pilot pilot = ship.getPilot();
             if (pilot.isUp() || pilot.isLeft() || pilot.isRight()) {
                 continue;

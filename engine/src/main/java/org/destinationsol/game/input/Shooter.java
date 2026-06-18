@@ -102,16 +102,14 @@ public class Shooter {
         Vector2 gunRelPos = ship.getHull().getGunMount(gun == gun2).getRelPos();
         Vector2 gunPos = SolMath.toWorld(gunRelPos, ship.getAngle(), shipPos);
         float shootAngle = calcShootAngle(gunPos, ship.getVelocity(), enemyPos, enemyVelocity, projSpeed, false);
+        // Correction for gun position offset from ship center — must read gunPos before freeing it.
+        float toShip = SolMath.angle(enemyPos, shipPos);
+        float toGun = SolMath.angle(enemyPos, gunPos);
         SolMath.free(gunPos);
         if (shootAngle != shootAngle) {
             return;
         }
-        {
-            // ok this is a hack
-            float toShip = SolMath.angle(enemyPos, shipPos);
-            float toGun = SolMath.angle(enemyPos, gunPos);
-            shootAngle += toGun - toShip;
-        }
+        shootAngle += toGun - toShip;
         float shipAngle = ship.getAngle();
         float maxAngleDiff = SolMath.angularWidthOfSphere(enemyApproxRad, toEnemyDst) + 10f;
         ProjectileConfig projConfig = gun.config.clipConf.projConfig;

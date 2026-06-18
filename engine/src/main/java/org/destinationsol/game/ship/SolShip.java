@@ -445,6 +445,9 @@ public class SolShip implements SolObject {
 
         boolean wasAlive = myHull.life > 0;
         myHull.life -= dmg;
+        if (myHull.life < 0) {
+            myHull.life = 0;
+        }
         if (wasAlive && myHull.life <= 0) {
             onDeath(game);
             Vector2 shipPos = getPosition();
@@ -533,6 +536,10 @@ public class SolShip implements SolObject {
                 Engine ei = (Engine) item;
                 boolean ok = ei.isBig() == (myHull.config.getType() == HullConfig.Type.BIG);
                 if (ok && equip) {
+                    Engine oldEngine = myHull.getEngine();
+                    if (oldEngine != null && oldEngine != ei) {
+                        oldEngine.setEquipped(0);
+                    }
                     myHull.setEngine(ei);
                     ei.setEquipped(1);
                 }

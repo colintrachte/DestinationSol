@@ -16,21 +16,30 @@
 
 package org.destinationsol.game.item;
 
+import org.destinationsol.common.SolRandom;
 import org.destinationsol.game.SolGame;
 
 import java.util.List;
 
 public class TradeContainer {
     private static final float MAX_AWAIT = 180f;
+    private static final float MIN_PRICE_MUL = 0.75f;
+    private static final float MAX_PRICE_MUL = 1.35f;
 
     private final TradeConfig config;
     private final ItemContainer myItems;
+    private final float priceMultiplier;
 
     private float myAwait;
 
     public TradeContainer(TradeConfig config) {
         this.config = config;
         myItems = new ItemContainer();
+        priceMultiplier = SolRandom.randomFloat(MIN_PRICE_MUL, MAX_PRICE_MUL);
+    }
+
+    public float getPriceMultiplier() {
+        return priceMultiplier;
     }
 
     public void update(SolGame game) {

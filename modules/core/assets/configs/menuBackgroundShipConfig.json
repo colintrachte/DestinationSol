@@ -2,6 +2,7 @@
   "Menu Ships": [
     "core:imperialTiny",
     "core:imperialSmall",
+    "core:imperialMedium",
     "core:minerSmall",
     "core:minerBoss",
     "core:desertSmall",

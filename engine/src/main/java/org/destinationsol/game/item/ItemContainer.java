@@ -127,14 +127,20 @@ public class ItemContainer implements Iterable<List<SolItem>> {
     }
 
     public List<SolItem> getSelectionAfterRemove(List<SolItem> selected) {
-        if (selected.size() > 1) {
+        if (selected != null && selected.size() > 1) {
             return selected;
         }
-        int idx = groups.indexOf(selected) + 1;
-        if (idx <= 0 || idx >= groupCount()) {
+        int idx = groups.indexOf(selected);
+        if (idx < 0) {
             return null;
         }
-        return groups.get(idx);
+        if (idx + 1 < groupCount()) {
+            return groups.get(idx + 1);
+        }
+        if (idx > 0) {
+            return groups.get(idx - 1);
+        }
+        return null;
     }
 
     public SolItem getRandom() {

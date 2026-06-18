@@ -69,6 +69,10 @@ public class ShowInventory extends InventoryOperationsScreen {
         equip2Button.subscribe(button -> {
             SolGame game = solApplication.getGame();
             SolItem selItem = inventoryScreen.getSelectedItem();
+            if (selItem == null) {
+                button.setEnabled(false);
+                return;
+            }
             if (target.maybeUnequip(game, selItem, true, false)) {
                 target.maybeUnequip(game, selItem, true, true);
             } else {

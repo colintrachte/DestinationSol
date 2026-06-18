@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir \"C:\\\\Program Files\\\\Java\")",
+      "Bash(dir \"C:\\\\Program Files\\\\Eclipse Adoptium\")",
+      "Bash(dir \"C:\\\\Program Files\\\\Microsoft\")",
+      "Bash(findstr /i \"jdk\\\\|java\")",
+      "Bash(JAVA_HOME=\"C:\\\\Program Files\\\\Eclipse Adoptium\\\\jdk-11.0.31.11-hotspot\" \"c:\\\\Users\\\\Colin\\\\Desktop\\\\DestinationSol\\\\gradlew.bat\" :engine:compileJava)"
+    ]
+  }
+}

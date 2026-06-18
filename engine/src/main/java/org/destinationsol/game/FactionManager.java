@@ -18,6 +18,7 @@ package org.destinationsol.game;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.RayCastCallback;
+import org.destinationsol.game.faction.DefaultReputationEvent;
 import org.destinationsol.game.faction.Faction;
 import org.destinationsol.game.faction.FactionsConfigs;
 import org.destinationsol.game.faction.ReputationEvent;
@@ -80,6 +81,43 @@ public class FactionManager {
             target.setRelation(instigator, target.getRelation(instigator) + targetReputationImpact);
         } else {
             target.setRelation(instigator, target.getRelation(instigator) + event.getDefaultReputationImpact());
+        }
+    }
+
+    /**
+     * Reports a damage event that scales reputation impact proportionally to the damage dealt.
+     * This prevents rapid-fire weapons from losing reputation far faster than slow heavy weapons.
+     * The scale maps 5 damage to 1 reputation point lost (minimum 1 point per hit).
+     * @param instigator the instigating faction that dealt the damage.
+     * @param target the faction whose ship was damaged.
+     * @param event the damage event.
+     * @param damage the amount of damage dealt.
+     * @param <T> the type of event.
+     */
+    public <T extends Enum<T> & ReputationEvent> void reportEvent(Faction instigator, Faction target, T event, float damage) {
+        Integer targetReputationImpact = target.getReputationImpact(event);
+        int baseImpact = targetReputationImpact != null ? targetReputationImpact : event.getDefaultReputationImpact();
+        int scaledImpact = (int)(baseImpact * damage / 5.0f);
+        if (scaledImpact == 0 && baseImpact != 0) {
+            scaledImpact = baseImpact > 0 ? 1 : -1;
+        }
+        target.setRelation(instigator, target.getRelation(instigator) + scaledImpact);
+    }
+
+    /**
+     * Reports that the instigator faction destroyed a ship belonging to the killed faction.
+     * Applies DESTROYED_SHIP penalty to the killed faction's view of the instigator,
+     * and awards KILLED_ENEMY_SHIP bonus to each faction that was already hostile to the killed faction.
+     */
+    public void reportKill(Faction instigator, Faction killedFaction) {
+        reportEvent(instigator, killedFaction, DefaultReputationEvent.DESTROYED_SHIP);
+        for (Faction bystander : factions) {
+            if (bystander == instigator || bystander == killedFaction) {
+                continue;
+            }
+            if (areEnemies(bystander, killedFaction)) {
+                reportEvent(instigator, bystander, DefaultReputationEvent.KILLED_ENEMY_SHIP);
+            }
         }
     }
 

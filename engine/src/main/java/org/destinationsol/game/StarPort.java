@@ -85,24 +85,27 @@ public class StarPort implements SolObject {
         return position;
     }
 
+    // Returns a pooled vector; caller must SolMath.free() it.
     private static Vector2 adjustDesiredPos(SolGame game, StarPort port, Vector2 desired) {
-        Vector2 newPosition = desired;
+        Vector2 result = SolMath.getVec(desired);
         List<SolObject> objects = game.getObjectManager().getObjects();
         for (SolObject object : objects) {
             if (object instanceof StarPort && object != port) {
                 StarPort starPort = (StarPort) object;
-                // Check if the positions overlap
-                Vector2 fromPosition = starPort.getPosition();
-                Vector2 distanceVector = SolMath.distVec(fromPosition, desired);
+                // Compare against the other port's desired position (not current position)
+                // so both ports converge to a stable layout instead of oscillating.
+                Vector2 otherDesired = getDesiredPosition(starPort.fromPlanet, starPort.toPlanet, true);
+                Vector2 distanceVector = SolMath.distVec(otherDesired, result);
                 float distance = SolMath.hypotenuse(distanceVector.x, distanceVector.y);
-                if (distance <= (float) StarPort.SIZE) {
+                if (distance > 0.001f && distance <= (float) StarPort.SIZE) {
                     distanceVector.scl((StarPort.SIZE + .5f) / distance);
-                    newPosition = fromPosition.cpy().add(distanceVector);
+                    result.set(otherDesired).add(distanceVector);
                 }
                 SolMath.free(distanceVector);
+                SolMath.free(otherDesired);
             }
         }
-        return newPosition;
+        return result;
     }
 
     @Override
@@ -111,12 +114,13 @@ public class StarPort implements SolObject {
 
         float fps = 1 / game.getTimeStep();
 
-        Vector2 velocity = getDesiredPosition(fromPlanet, toPlanet, true);
+        Vector2 trueDesired = getDesiredPosition(fromPlanet, toPlanet, true);
         // Adjust position so that StarPorts are not overlapping
-        velocity = adjustDesiredPos(game, this, velocity);
-        velocity.sub(position).scl(fps / 4);
-        body.setLinearVelocity(velocity);
-        SolMath.free(velocity);
+        Vector2 adjustedDesired = adjustDesiredPos(game, this, trueDesired);
+        SolMath.free(trueDesired);
+        adjustedDesired.sub(position).scl(fps / 4);
+        body.setLinearVelocity(adjustedDesired);
+        SolMath.free(adjustedDesired);
         float desiredAngle = SolMath.angle(fromPlanet.getPosition(), toPlanet.getPosition());
         body.setAngularVelocity((desiredAngle - angle) * MathUtils.degRad * fps / 4);
 
@@ -125,7 +129,9 @@ public class StarPort implements SolObject {
             ship.setMoney(ship.getMoney() - FARE);
             Transcendent transcendent = new Transcendent(ship, fromPlanet, toPlanet, game);
             if (transcendent.getShip().getPilot().isPlayer()) {
-                SaveManager.saveWorld(game.getWorldConfig());
+                if (!game.isTutorial()) {
+                    SaveManager.saveWorld(game.getWorldConfig());
+                }
                 game.getHero().setTranscendent(transcendent);
             }
             ObjectManager objectManager = game.getObjectManager();
@@ -240,9 +246,10 @@ public class StarPort implements SolObject {
 
         public StarPort build(SolGame game, Planet from, Planet to, boolean secondary) {
             float angle = SolMath.angle(from.getPosition(), to.getPosition());
-            Vector2 position = getDesiredPosition(from, to, false);
+            Vector2 truePosition = getDesiredPosition(from, to, false);
             // Adjust position so that StarPorts are not overlapping
-            position = adjustDesiredPos(game, null, position);
+            Vector2 position = adjustDesiredPos(game, null, truePosition);
+            SolMath.free(truePosition);
             ArrayList<Drawable> drawables = new ArrayList<>();
             Body body = myLoader.getBodyAndSprite(game.getObjectManager().getWorld(), Assets.getAtlasRegion("engine:starPort"), SIZE,
                     BodyDef.BodyType.KinematicBody, new Vector2(position), angle, drawables, 10f, DrawableLevel.BIG_BODIES);
@@ -404,7 +411,9 @@ public class StarPort implements SolObject {
                 SolShip ship = this.ship.toObject(game);
                 if (ship.getPilot().isPlayer()) {
                     game.getHero().setSolShip(ship, game);
-                    SaveManager.saveWorld(game.getWorldConfig());
+                    if (!game.isTutorial()) {
+                        SaveManager.saveWorld(game.getWorldConfig());
+                    }
                 }
                 objectManager.addObjDelayed(ship);
                 blip(game, ship);

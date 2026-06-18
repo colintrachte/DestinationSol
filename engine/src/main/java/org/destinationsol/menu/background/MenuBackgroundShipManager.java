@@ -80,7 +80,7 @@ public class MenuBackgroundShipManager {
         JSONObject rootNode = Validator.getValidatedJSON(urnString, "engine:schemaHullConfig");
 
         JSONObject rigidBodyNode = rootNode.getJSONObject("rigidBody");
-        shipMeshLoader.readRigidBody(rigidBodyNode, urnString);
+        shipMeshLoader.readRigidBody(rigidBodyNode, texture.name);
         float scale = 1f;
         float angle = 105f;
         Vector2 position = new Vector2(4f, -4f);

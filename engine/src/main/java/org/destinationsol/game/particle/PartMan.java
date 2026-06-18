@@ -38,6 +38,7 @@ public class PartMan {
     public static final float EXPL_LIGHT_MAX_SZ = .4f;
     public static final float EXPL_LIGHT_MAX_FADE_TIME = .8f;
     public static final float SZ_TO_BLINK_COUNT = 18f;
+    private static final int MAX_BLINK_COUNT = 12;
 
     @Inject
     public PartMan() {
@@ -54,7 +55,7 @@ public class PartMan {
     }
 
     public void blinks(Vector2 position, SolGame game, float size) {
-        int count = (int) (SZ_TO_BLINK_COUNT * size * size);
+        int count = Math.min((int) (SZ_TO_BLINK_COUNT * size * size), MAX_BLINK_COUNT);
         for (int i = 0; i < count; i++) {
             Vector2 lightPos = new Vector2();
             SolMath.fromAl(lightPos, SolRandom.randomFloat(180), SolRandom.randomFloat(0, size / 2));

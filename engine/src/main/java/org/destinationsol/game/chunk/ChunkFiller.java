@@ -33,11 +33,14 @@ import org.destinationsol.game.drawables.DrawableLevel;
 import org.destinationsol.game.drawables.FarDrawable;
 import org.destinationsol.game.drawables.RectSprite;
 import org.destinationsol.game.drawables.SpriteManager;
+import org.destinationsol.game.faction.Faction;
 import org.destinationsol.game.input.AiPilot;
+import org.destinationsol.game.input.Guardian;
 import org.destinationsol.game.input.MoveDestProvider;
 import org.destinationsol.game.input.Pilot;
 import org.destinationsol.game.input.StillGuard;
 import org.destinationsol.game.planet.BeltConfig;
+import org.destinationsol.game.planet.ConsumedAngles;
 import org.destinationsol.game.planet.Planet;
 import org.destinationsol.game.planet.PlanetManager;
 import org.destinationsol.game.planet.SolarSystem;
@@ -187,7 +190,32 @@ public class ChunkFiller {
             enemyPosition.ifPresent(enemyPos -> {
                 FarShip ship = buildSpaceEnemy(game, enemyPos, removeController, enemyConfig);
                 game.getObjectManager().addFarObjNow(ship);
+                if (enemyConfig.guard != null) {
+                    spawnGuards(game, ship, enemyConfig.guard, removeController);
+                }
             });
+        }
+    }
+
+    private void spawnGuards(SolGame game, FarShip target, ShipConfig guardConfig, RemoveController removeController) {
+        Faction faction = game.getFactionMan().getBuilderForHull(guardConfig.hull);
+        boolean hasRepairer = game.getFactionMan().getPlayerFaction().getRelation(faction) >= 0;
+        int guardCount = (int) guardConfig.density;
+        ConsumedAngles consumedAngles = new ConsumedAngles();
+        for (int i = 0; i < guardCount; i++) {
+            float guardRelAngle = 0;
+            for (int j = 0; j < 5; j++) {
+                guardRelAngle = SolRandom.randomFloat(180);
+                if (!consumedAngles.isConsumed(guardRelAngle, guardConfig.hull.getApproxRadius())) {
+                    consumedAngles.add(guardRelAngle, guardConfig.hull.getApproxRadius());
+                    break;
+                }
+            }
+            Guardian dp = new Guardian(game, guardConfig.hull, target.getPilot(), target.getPosition(), target.getHullConfig(), guardRelAngle);
+            Pilot pilot = new AiPilot(dp, true, faction, false, null, Const.AI_DET_DIST);
+            FarShip guard = game.getShipBuilder().buildNewFar(game, dp.getDestination(), null, guardRelAngle, 0, pilot,
+                    guardConfig.items, guardConfig.hull, removeController, hasRepairer, guardConfig.money, null, true);
+            game.getObjectManager().addFarObjNow(guard);
         }
     }
 

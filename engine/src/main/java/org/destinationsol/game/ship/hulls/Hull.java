@@ -107,6 +107,13 @@ public class Hull {
 
         if (engine != null) {
             engine.update(angle, game, provider, body, velocity, controlsEnabled, mass, ship);
+        } else if (controlsEnabled && provider.isLeft() != provider.isRight()) {
+            // Minimal attitude thrusters allow slow rotation even without a main engine,
+            // so ships feel physical rather than locking in place when engineless.
+            float ts = game.getTimeStep();
+            float curRotSpd = body.getAngularVelocity() * MathUtils.radDeg;
+            float desiredRotSpd = SolMath.toInt(provider.isRight()) * 8f;
+            body.setAngularVelocity(MathUtils.degRad * SolMath.approach(curRotSpd, desiredRotSpd, 3f * ts));
         }
 
         Faction faction = ship.getPilot().getFaction();

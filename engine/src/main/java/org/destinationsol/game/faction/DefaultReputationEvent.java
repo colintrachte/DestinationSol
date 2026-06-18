@@ -32,7 +32,12 @@ public enum DefaultReputationEvent implements ReputationEvent {
      * A ship has bought an item from a station.
      * (Note: this only applies to the player for now.)
      */
-    BOUGHT_ITEM(1);
+    BOUGHT_ITEM(1),
+    /**
+     * The player's faction killed a ship that was an enemy of this faction.
+     * Applied to every faction that was hostile to the destroyed ship's faction.
+     */
+    KILLED_ENEMY_SHIP(5);
 
     /**
      * The default impact on reputation this event will have in absence of a faction-specific value.

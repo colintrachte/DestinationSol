@@ -304,7 +304,7 @@ public class MapDrawer implements UpdateAwareSystem{
             }
             if ((o instanceof StarPort)) {
                 StarPort sp = (StarPort) o;
-                drawStarPortIcon(drawer, iconSz, sp.getFromPlanet(), sp.getToPlanet());
+                drawObjIcon(iconSz, sp.getPosition(), sp.getAngle(), null, null, null, -1, null, starPortTexture, drawer);
             }
             // Fix for when the player is in hyper. Hero is null and replaced in ObjMan with a StarPort.Transcendent
             if ((o instanceof StarPort.Transcendent)) {

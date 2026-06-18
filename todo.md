@@ -1,5 +1,13 @@
 # DestinationSol Fork — TODO
 
+Priority order for a test pass:
+
+#720 — spawn into station after save/load (most likely to have an observable edge case)
+#731 — fire rapidly at an enemy, kill them, check rep gained vs. expected; verify it works for each major faction pair
+#732 — open shop, note price, fly away, return, confirm price re-randomized; test buy with exactly enough money at 1.35× price
+#722 — equip a isUnderneathHull: true weapon and verify it renders under own hull but visible from outside when docked to a station
+#616/#712 — sell/drop the last item in inventory via both keyboard and mouse
+
 Compiled from upstream issues and open PRs at [MovingBlocks/DestinationSol](https://github.com/MovingBlocks/DestinationSol) as of 2026-06-17.
 
 ---

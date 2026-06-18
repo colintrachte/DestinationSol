@@ -226,6 +226,7 @@ public class MapScreen extends NUIScreenLayer {
         solApplication.getGame().getMapDrawer().setToggled(true);
         waypointOperation = WaypointOperation.NONE;
         solApplication.getGame().getMapDrawer().getMapDrawPositionAdditive().set(0, 0);
+        solApplication.getGame().getScreens().oldMainGameScreen.getShipControl().blur();
     }
 
     @Override

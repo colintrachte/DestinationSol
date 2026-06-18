@@ -66,6 +66,10 @@ public class SaveManager {
     protected SaveManager() { }
 
     public static void writeShips(HullConfig hull, float money, List<SolItem> itemsList, Hero hero, HullConfigManager hullConfigManager) {
+        writeShips(hull, money, itemsList, hero, hullConfigManager, hero.getPosition());
+    }
+
+    public static void writeShips(HullConfig hull, float money, List<SolItem> itemsList, Hero hero, HullConfigManager hullConfigManager, Vector2 spawnPosition) {
         String hullName = hullConfigManager.getName(hull);
 
         AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
@@ -73,12 +77,10 @@ public class SaveManager {
 
             String items = itemsToString(itemsList);
 
-            Vector2 pos = hero.getPosition();
-
             String waypoints = waypointsToString(hero.getWaypoints());
 
             IniReader.write(Const.SAVE_FILE_NAME, "hull", hullName, "money", (int) money, "items", items,
-                    "x", pos.x, "y", pos.y, "waypoints", waypoints, "version", Const.VERSION);
+                    "x", spawnPosition.x, "y", spawnPosition.y, "waypoints", waypoints, "version", Const.VERSION);
             return null;
         });
     }

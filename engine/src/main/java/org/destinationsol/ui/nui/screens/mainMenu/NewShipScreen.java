@@ -129,21 +129,44 @@ public class NewShipScreen extends NUIScreenLayer {
     public void onAdded() {
         worldConfig.setSeed(System.currentTimeMillis());
 
-        String currentShip = playerSpawnConfigNames.get(playerSpawnConfigIndex);
+        String currentShip = playerSpawnConfigNames.isEmpty() ? null : playerSpawnConfigNames.get(playerSpawnConfigIndex);
         playerSpawnConfigNames.clear();
+        playerSpawnConfigTextures.clear();
+
         Set<ResourceUrn> configUrns = Assets.getAssetHelper().listAssets(Json.class, "playerSpawnConfig");
         for (Module module : worldConfig.getModules()) {
             ResourceUrn configUrn = new ResourceUrn(module.getId(), new Name("playerSpawnConfig"));
             if (configUrns.contains(configUrn)) {
-                playerSpawnConfigNames.addAll(Validator.getValidatedJSON(configUrn.toString(), "engine:schemaPlayerSpawnConfig").keySet());
+                JSONObject playerSpawnConfigs = Validator.getValidatedJSON(configUrn.toString(), "engine:schemaPlayerSpawnConfig");
+                playerSpawnConfigNames.addAll(playerSpawnConfigs.keySet());
+                for (String spawnConfigName : playerSpawnConfigs.keySet()) {
+                    JSONObject playerSpawnConfig = playerSpawnConfigs.getJSONObject(spawnConfigName);
+                    try {
+                        playerSpawnConfigTextures.add(Assets.getDSTexture(playerSpawnConfig.getString("hull")).getUiTexture());
+                    } catch (RuntimeException e) {
+                        logger.error("Failed to load ship texture!", e);
+                        playerSpawnConfigTextures.add(null);
+                    }
+                }
             }
         }
 
-        if (!playerSpawnConfigNames.contains(currentShip)) {
-            // The player picked a ship that's now invalid, so reset their selection.
+        // Restore selection if the ship is still available, otherwise reset to first.
+        if (currentShip != null && playerSpawnConfigNames.contains(currentShip)) {
+            playerSpawnConfigIndex = playerSpawnConfigNames.indexOf(currentShip);
+        } else {
             playerSpawnConfigIndex = 0;
+        }
+
+        if (!playerSpawnConfigNames.isEmpty()) {
             UIButton startingShipButton = find("startingShipButton", UIButton.class);
-            startingShipButton.setText("Starting Ship: " + playerSpawnConfigNames.get(playerSpawnConfigIndex));
+            if (startingShipButton != null) {
+                startingShipButton.setText("Starting Ship: " + playerSpawnConfigNames.get(playerSpawnConfigIndex));
+            }
+            UIImage shipPreviewImage = find("shipPreviewImage", UIImage.class);
+            if (shipPreviewImage != null) {
+                shipPreviewImage.setImage(playerSpawnConfigTextures.get(playerSpawnConfigIndex));
+            }
         }
     }
 

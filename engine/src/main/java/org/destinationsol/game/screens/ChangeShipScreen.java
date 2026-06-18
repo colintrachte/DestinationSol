@@ -122,8 +122,21 @@ public class ChangeShipScreen extends InventoryOperationsScreen {
     private void changeShip(SolGame game, Hero hero, ShipItem selected) {
         HullConfig newConfig = selected.getConfig();
         Hull hull = hero.getHull();
-        Engine.Config ec = newConfig.getEngineConfig();
-        Engine ei = ec == null ? null : ec.exampleEngine.copy();
+
+        // Reuse the equipped engine if it matches the new hull type; otherwise unequip it
+        // to prevent it remaining flagged as equipped in the item container.
+        Engine currentEngine = hull.getEngine();
+        Engine ei;
+        if (currentEngine != null && currentEngine.isBig() == (newConfig.getType() == HullConfig.Type.BIG)) {
+            ei = currentEngine;
+        } else {
+            if (currentEngine != null) {
+                currentEngine.setEquipped(0);
+            }
+            Engine.Config ec = newConfig.getEngineConfig();
+            ei = ec == null ? null : ec.exampleEngine.copy();
+        }
+
         Gun g2 = hull.getGun(true);
         SolShip newHero = game.getShipBuilder().build(game, hero.getPosition(), new Vector2(), hero.getAngle(), 0, hero.getPilot(),
                 hero.getItemContainer(), newConfig, newConfig.getMaxLife(), hull.getGun(false), g2, null,

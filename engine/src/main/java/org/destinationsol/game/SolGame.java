@@ -57,6 +57,7 @@ import org.destinationsol.game.screens.GameScreens;
 import org.destinationsol.game.ship.ShipAbility;
 import org.destinationsol.game.ship.ShipBuilder;
 import org.destinationsol.game.ship.SloMo;
+import org.destinationsol.game.ship.SolShip;
 import org.destinationsol.game.ship.hulls.HullConfig;
 import org.destinationsol.game.tutorial.TutorialManager;
 import org.destinationsol.mercenary.MercenaryUtils;
@@ -158,6 +159,7 @@ public class SolGame {
     private RespawnState respawnState;
     private SortedMap<Integer, List<UpdateAwareSystem>> onPausedUpdateSystems;
     private SortedMap<Integer, List<UpdateAwareSystem>> updateSystems;
+    private boolean isEnding;
 
     private EntitySystemManager entitySystemManager;
     private final MainGameScreen mainGameScreen;
@@ -255,7 +257,7 @@ public class SolGame {
         Timer.schedule(new Timer.Task() {
             @Override
             public void run() {
-                if (!hero.isTranscendent()) {
+                if (!isTutorial() && !hero.isTranscendent()) {
                     saveShip();
 //                    Console.getInstance().println("Game saved");
                 }
@@ -320,6 +322,7 @@ public class SolGame {
     }
 
     public void onGameEnd(Context context) {
+        isEnding = true;
         // If the hero tries to exit while dead, respawn them first, then save
         if (hero.isDead()) {
             respawn();
@@ -383,7 +386,28 @@ public class SolGame {
             items = respawnState.getRespawnItems();
         }
 
-        SaveManager.writeShips(hull, money, items, hero, hullConfigManager);
+        SaveManager.writeShips(hull, money, items, hero, hullConfigManager, computeSafeSpawnPosition());
+    }
+
+    private Vector2 computeSafeSpawnPosition() {
+        Vector2 heroPos = hero.getPosition();
+        float heroRadius = hero.getHull().config.getApproxRadius();
+        SolShip heroShip = hero.getShip();
+        for (SolObject obj : objectManager.getObjects()) {
+            if (!obj.hasBody() || obj == heroShip) {
+                continue;
+            }
+            float objRadius = objectManager.getRadius(obj);
+            float safeDistance = objRadius + heroRadius;
+            if (heroPos.dst(obj.getPosition()) < safeDistance) {
+                Vector2 dir = new Vector2(heroPos).sub(obj.getPosition());
+                if (dir.len2() < 0.001f) {
+                    dir.set(1, 0);
+                }
+                return new Vector2(obj.getPosition()).add(dir.nor().scl(safeDistance + 1f));
+            }
+        }
+        return heroPos;
     }
 
     public GameScreens getScreens() {
@@ -395,9 +419,15 @@ public class SolGame {
             onPausedUpdateSystems.keySet().forEach(key -> onPausedUpdateSystems.get(key).forEach(system -> system.update(this, timeStep)));
         } else {
             updateTime();
-            updateSystems.keySet().forEach(key ->
-                    updateSystems.get(key).forEach(
-                            system -> system.update(this, timeStep)));
+            outer:
+            for (Integer key : updateSystems.keySet()) {
+                for (UpdateAwareSystem system : updateSystems.get(key)) {
+                    system.update(this, timeStep);
+                    if (isEnding) {
+                        break outer;
+                    }
+                }
+            }
         }
     }
 
