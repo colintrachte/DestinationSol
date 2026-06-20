@@ -353,7 +353,7 @@ class common {
     /**
      * Considers given arguments for the presence of a custom remote, setting that up right if found, tidying up the arguments.
      * @param arguments the args passed into the script
-     * @return the adjusted arguments without any found custom remote details and the commmand name itself (get or recurse)
+     * @return the adjusted arguments without any found custom remote details and the command name itself (get or recurse)
      */
     def processCustomRemote(String[] arguments) {
         def remoteArg = arguments.findLastIndexOf {

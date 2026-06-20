@@ -103,7 +103,7 @@ switch (cleanerArgs[0]) {
         println "We're updating $itemType"
         String[] itemList
         if (cleanerArgs.length == 1) {
-            def itemString = common.getUserString("Enter what to update - separate multiple with spaces, CapiTaliZation MatterS): ")
+            def itemString = common.getUserString("Enter what to update - separate multiple with spaces, capitalization matters): ")
             itemList = itemString.split("\\s+")
         } else {
             itemList = cleanerArgs.drop(1)

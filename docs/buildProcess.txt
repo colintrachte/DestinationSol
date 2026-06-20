@@ -1,6 +1,6 @@
 - update product version
 - pack textures
-- build sol.jar & solDesctop.jar
+- build sol.jar & solDesktop.jar
 - copy solWin, remove devBuild, copy jars & res
 - check if solWin works
 - copy jar & res to android project

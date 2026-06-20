@@ -39,7 +39,7 @@ SHIP ENGINE WORK
 is played when ship engine is on and ship gains acceleration. Different engine types can have different sounds. There should be one that sounds like a truck engine. And 3 types that sound like, eh, space rocket?
 
 GUN SHOOT
-there would be wide variety of guns, but all of them can be divided in 3 categories: bullet-based, energy-based, rocked-based. Plus 2 special types: energy charge that disables ship controls and a gun that shoots with heavy "nails" that don't do damage but apply force to enemy.
+there would be wide variety of guns, but all of them can be divided in 3 categories: bullet-based, energy-based, rocket-based. Plus 2 special types: energy charge that disables ship controls and a gun that shoots with heavy "nails" that don't do damage but apply force to enemy.
 
 GUN RECHARGE
 
