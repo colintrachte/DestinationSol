@@ -67,6 +67,8 @@ import org.destinationsol.ui.UiDrawer;
 import org.destinationsol.ui.Waypoint;
 import org.destinationsol.ui.nui.screens.MainGameScreen;
 import org.destinationsol.world.GalaxyBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.context.exception.BeanNotFoundException;
 import org.terasology.gestalt.di.BeanContext;
 import org.terasology.gestalt.entitysystem.entity.EntityRef;
@@ -80,6 +82,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 public class SolGame {
+    private static final Logger logger = LoggerFactory.getLogger(SolGame.class);
     private static final String NUI_MAIN_GAME_SCREEN_DESKTOP_URI = "engine:mainGameScreen_desktop";
     private static final String NUI_MAIN_GAME_SCREEN_MOBILE_URI = "engine:mainGameScreen_mobile";
 
@@ -210,7 +213,7 @@ public class SolGame {
                 try {
                     beanContext.inject(system);
                 } catch (BeanNotFoundException e) {
-                    e.printStackTrace();
+                    logger.error("Failed to inject dependencies into update system '{}', skipping", updateSystemClass.getName(), e);
                     continue;
                 }
                 if (!registerAnnotation.paused()) {
@@ -232,7 +235,7 @@ public class SolGame {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Failed to register update systems from modules", e);
         }
     }
 
@@ -241,16 +244,22 @@ public class SolGame {
 
         respawnState = new RespawnState();
         SolRandom.setSeed(worldConfig.getSeed());
+        logger.info("Starting game: ship='{}', isNewGame={}, seed={}", shipName, isNewGame, worldConfig.getSeed());
 
+        logger.debug("Building galaxy...");
         //World Generation will be initiated from here
         galaxyBuilder.buildWithRandomSolarSystemGenerators();
 
         //Add all the Planets in the game to the PlanetManager TODO: Add mazes, belts, etc. once the are implemented
         addObjectsToPlanetManager();
+        logger.debug("Galaxy built: {} solar systems, {} planets", planetManager.getSystems().size(), planetManager.getPlanets().size());
 
+        logger.debug("Creating player ship...");
         createGame(shipName, isNewGame);
+        logger.debug("Player ship created");
 
         if (!isNewGame) {
+            logger.debug("Spawning mercenaries from save...");
             createAndSpawnMercenariesFromSave();
         }
         SolMath.checkVectorsTaken(null);
@@ -293,6 +302,7 @@ public class SolGame {
          * If shipName is not null then a new ship has to be created.
          */
         boolean isNewShip = shipName != null;
+        logger.debug("createGame: isNewShip={}, respawned={}", isNewShip, respawnState.isPlayerRespawned());
         ShipConfig shipConfig = readShipFromConfigOrLoadFromSaveIfNull(shipName, isNewShip);
         if (!respawnState.isPlayerRespawned()) {
             galaxyFiller.fill(this, hullConfigManager, itemManager, shipConfig.hull.getInternalName().split(":")[0]);
@@ -304,6 +314,7 @@ public class SolGame {
                 solApplication.getOptions().controlType == GameOptions.ControlType.MOUSE,
                 isNewShip);
         hero.initialise(this);
+        logger.debug("Hero initialized with hull '{}'", shipConfig.hull.getInternalName());
     }
 
     private ShipConfig readShipFromConfigOrLoadFromSaveIfNull(String shipName, boolean isNewShip) {
@@ -322,6 +333,7 @@ public class SolGame {
     }
 
     public void onGameEnd(Context context) {
+        logger.info("Ending game session, saving state...");
         isEnding = true;
         // If the hero tries to exit while dead, respawn them first, then save
         if (hero.isDead()) {
@@ -337,7 +349,7 @@ public class SolGame {
             try {
                 context.get(SerialisationManager.class).serialise();
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Failed to serialise game state on game end", e);
             }
         } else {
             tutorialManager.ifPresent(TutorialManager::onGameEnd);
@@ -349,7 +361,7 @@ public class SolGame {
         try {
             objectManager.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Error closing object manager", e);
         }
         solApplication.getNuiManager().clearScreens();
     }
@@ -524,6 +536,7 @@ public class SolGame {
     }
 
     public void respawn() {
+        logger.info("Player respawning");
         respawnState.setPlayerRespawned(true);
         if (hero.isAlive()) {
             setRespawnState();

@@ -81,6 +81,8 @@ public abstract class SolarSystemGenerator {
     private float radius;
     private boolean positioned;
     private int solarSystemNumber;
+    private static final int MAX_CONSECUTIVE_GENERATOR_FAILURES = 10;
+
     private int planetCount;
     private int possibleBeltCount;
     private int mazeCount;
@@ -275,6 +277,7 @@ public abstract class SolarSystemGenerator {
      */
     protected void initializeRandomPlanetGenerators() {
         int planetsLeft = getPlanetCount();
+        int consecutiveFailures = 0;
         while (planetsLeft > 0) {
             int index = SolRandom.seededRandomInt(featureGeneratorTypes.size());
             if ((PlanetGenerator.class.isAssignableFrom(featureGeneratorTypes.get(index)))) {
@@ -283,8 +286,15 @@ public abstract class SolarSystemGenerator {
                     newFeatureGenerator.setPlanetConfigManager(planetConfigManager);
                     activeFeatureGenerators.add(newFeatureGenerator);
                     planetsLeft--;
+                    consecutiveFailures = 0;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    consecutiveFailures++;
+                    if (consecutiveFailures == 1) {
+                        logger.error("Failed to instantiate planet generator '{}'", featureGeneratorTypes.get(index).getName(), e);
+                    } else if (consecutiveFailures >= MAX_CONSECUTIVE_GENERATOR_FAILURES) {
+                        logger.error("Planet generator instantiation has failed {} times in a row — aborting (this error was being logged millions of times). {} planet(s) will be missing.", MAX_CONSECUTIVE_GENERATOR_FAILURES, planetsLeft);
+                        break;
+                    }
                 }
             }
         }
@@ -298,6 +308,7 @@ public abstract class SolarSystemGenerator {
     protected void initializeRandomMazeGenerators() {
         //we will initialize up to 12 mazes to ensure they fit around the SolarSystem
         int mazesLeft = Math.min(getMazeCount(), 12);
+        int consecutiveFailures = 0;
         while (mazesLeft > 0) {
             int index = SolRandom.seededRandomInt(featureGeneratorTypes.size());
             if (MazeGenerator.class.isAssignableFrom(featureGeneratorTypes.get(index))) {
@@ -306,8 +317,15 @@ public abstract class SolarSystemGenerator {
                     newFeatureGenerator.setMazeConfigManager(mazeConfigManager);
                     activeFeatureGenerators.add(newFeatureGenerator);
                     mazesLeft--;
+                    consecutiveFailures = 0;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    consecutiveFailures++;
+                    if (consecutiveFailures == 1) {
+                        logger.error("Failed to instantiate maze generator '{}'", featureGeneratorTypes.get(index).getName(), e);
+                    } else if (consecutiveFailures >= MAX_CONSECUTIVE_GENERATOR_FAILURES) {
+                        logger.error("Maze generator instantiation has failed {} times in a row — aborting (this error was being logged millions of times). {} maze(s) will be missing.", MAX_CONSECUTIVE_GENERATOR_FAILURES, mazesLeft);
+                        break;
+                    }
                 }
             }
         }
@@ -322,6 +340,7 @@ public abstract class SolarSystemGenerator {
      */
     protected void initializeRandomBeltGenerators(float beltChance) {
         int beltsLeft = getPossibleBeltCount();
+        int consecutiveFailures = 0;
         while (beltsLeft > 0) {
             int index = SolRandom.seededRandomInt(featureGeneratorTypes.size());
             if ((BeltGenerator.class.isAssignableFrom(featureGeneratorTypes.get(index)))) {
@@ -333,8 +352,15 @@ public abstract class SolarSystemGenerator {
                         activeFeatureGenerators.add(newFeatureGenerator);
                     }
                     beltsLeft--;
+                    consecutiveFailures = 0;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    consecutiveFailures++;
+                    if (consecutiveFailures == 1) {
+                        logger.error("Failed to instantiate belt generator '{}'", featureGeneratorTypes.get(index).getName(), e);
+                    } else if (consecutiveFailures >= MAX_CONSECUTIVE_GENERATOR_FAILURES) {
+                        logger.error("Belt generator instantiation has failed {} times in a row — aborting (this error was being logged millions of times). {} belt(s) will be missing.", MAX_CONSECUTIVE_GENERATOR_FAILURES, beltsLeft);
+                        break;
+                    }
                 }
             }
         }
@@ -353,6 +379,7 @@ public abstract class SolarSystemGenerator {
      */
     protected void initializeRandomOtherFeatureGenerators() {
         int featuresLeft = getOtherFeaturesCount();
+        int consecutiveFailures = 0;
         while (featuresLeft > 0) {
             int index = SolRandom.seededRandomInt(featureGeneratorTypes.size());
             if (isOtherGeneratorType(index)) {
@@ -360,8 +387,15 @@ public abstract class SolarSystemGenerator {
                     FeatureGenerator newFeatureGenerator = featureGeneratorTypes.get(index).newInstance();
                     activeFeatureGenerators.add(newFeatureGenerator);
                     featuresLeft--;
+                    consecutiveFailures = 0;
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    consecutiveFailures++;
+                    if (consecutiveFailures == 1) {
+                        logger.error("Failed to instantiate feature generator '{}'", featureGeneratorTypes.get(index).getName(), e);
+                    } else if (consecutiveFailures >= MAX_CONSECUTIVE_GENERATOR_FAILURES) {
+                        logger.error("Feature generator instantiation has failed {} times in a row — aborting (this error was being logged millions of times). {} feature(s) will be missing.", MAX_CONSECUTIVE_GENERATOR_FAILURES, featuresLeft);
+                        break;
+                    }
                 }
             }
         }

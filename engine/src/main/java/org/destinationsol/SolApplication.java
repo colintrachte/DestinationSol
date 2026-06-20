@@ -154,10 +154,11 @@ public class SolApplication implements ApplicationListener {
         options = appContext.getBean(GameOptions.class);
 
         componentManager = appContext.getBean(ComponentManager.class);
+        logger.info("Initializing modules...");
         try {
             appContext.getBean(ModuleManager.class).init();
         } catch (Exception e) {
-            logger.error("Cannot initialize modules");
+            logger.error("Cannot initialize modules", e);
         }
         AssetHelper helper = appContext.getBean(AssetHelper.class);
 
@@ -168,6 +169,7 @@ public class SolApplication implements ApplicationListener {
                 ),
                 componentManager,
                 isMobile);
+        logger.debug("Asset system initialized");
 
         appContext.getBean(ModuleManager.class).printAvailableModules();
 
@@ -182,6 +184,7 @@ public class SolApplication implements ApplicationListener {
         menuBackgroundManager = appContext.getBean(MenuBackgroundManager.class);
         menuScreens = new MenuScreens(layouts, isMobile(), options, nuiManager);
 
+        logger.info("Application initialized, showing main menu");
         nuiManager.pushScreen(menuScreens.main);
     }
 
@@ -211,13 +214,14 @@ public class SolApplication implements ApplicationListener {
         try {
             draw();
         } catch (Throwable t) {
-            logger.error("Fatal Error:", t);
-            fatalErrorMsg = "A fatal error occurred:\n" + t.getMessage();
-            StringWriter sw = new StringWriter();
-            PrintWriter pw = new PrintWriter(sw);
-            t.printStackTrace(pw);
-            fatalErrorTrace = sw.toString();
-
+            if (fatalErrorMsg == null) {
+                logger.error("Fatal Error:", t);
+                fatalErrorMsg = "A fatal error occurred:\n" + t.getMessage();
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                t.printStackTrace(pw);
+                fatalErrorTrace = sw.toString();
+            }
             if (!isMobile) {
                 throw t;
             }
@@ -332,6 +336,7 @@ public class SolApplication implements ApplicationListener {
     }
 
     public void play(boolean tut, String shipName, boolean isNewGame, WorldConfig worldConfig) {
+        logger.info("Starting game: ship='{}', isNewGame={}", shipName, isNewGame);
         ModuleManager moduleManager = appContext.getBean(ModuleManager.class);
         moduleManager.loadEnvironment(worldConfig.getModules());
         appContext.getBean(AssetHelper.class).switchEnvironment(moduleManager.getEnvironment());
@@ -351,15 +356,17 @@ public class SolApplication implements ApplicationListener {
 
         entitySystemManager = gameContext.getBean(EntitySystemManager.class);
         entitySystemManager.initialise();
+        logger.debug("Entity system initialized");
 
         solGame.createUpdateSystems();
         solGame.startGame(shipName, isNewGame, entitySystemManager);
+        logger.debug("Game started");
 
         if (!isNewGame) {
             try {
                 gameContext.getBean(SerialisationManager.class).deserialise();
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Failed to deserialise saved game state", e);
             }
         }
 
@@ -378,6 +385,7 @@ public class SolApplication implements ApplicationListener {
 
     @Override
     public void dispose() {
+        logger.info("Disposing application resources");
         commonDrawer.dispose();
 
         if (solGame != null) {
@@ -404,6 +412,7 @@ public class SolApplication implements ApplicationListener {
     }
 
     public void finishGame() {
+        logger.info("Game session ended, returning to main menu");
         solGame.onGameEnd(gameContext.getBean(Context.class));
         // TODO: remove the following line when all screens have been ported to use NUI
         inputManager.setScreen(this, null);

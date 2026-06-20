@@ -72,7 +72,7 @@ public class UISkinFormat extends AbstractAssetFileFormat<UISkinData> {
             data.setSource(inputs.get(0));
             return data;
         } catch (JsonSyntaxException e) {
-            e.printStackTrace();
+            logger.error("Failed to parse JSON skin '{}'", urn, e);
             throw new IOException("Failed to load skin '" + urn + "'", e);
         }
     }

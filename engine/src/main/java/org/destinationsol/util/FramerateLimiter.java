@@ -1,6 +1,12 @@
 package org.destinationsol.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class FramerateLimiter {
+    private static final Logger logger = LoggerFactory.getLogger(FramerateLimiter.class);
+    private static final int MAX_INTERRUPT_WARNINGS = 5;
+    private static int interruptWarningCount = 0;
     protected static long variableYieldTime;
     protected static long lastTime;
 
@@ -37,7 +43,13 @@ public class FramerateLimiter {
                 }
             }
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            interruptWarningCount++;
+            if (interruptWarningCount < MAX_INTERRUPT_WARNINGS) {
+                logger.warn("Frame sync sleep interrupted", e);
+            } else if (interruptWarningCount == MAX_INTERRUPT_WARNINGS) {
+                logger.warn("Frame sync sleep interrupted — this warning has fired {} times and is being suppressed (this message was going to be logged millions of times)", MAX_INTERRUPT_WARNINGS);
+            }
+            Thread.currentThread().interrupt();
         } finally {
             lastTime = System.nanoTime() - Math.min(overSleep, sleepTime);
 

@@ -29,9 +29,12 @@ import org.destinationsol.game.item.SolItem;
 import org.destinationsol.game.ship.FarShip;
 import org.destinationsol.game.ship.hulls.HullConfig;
 import org.destinationsol.ui.Waypoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class PlayerCreator {
 
+    private static final Logger logger = LoggerFactory.getLogger(PlayerCreator.class);
     private static final int TUTORIAL_MONEY_AMOUNT = 200;
     private static final int SHIP_SPAWN_ANGLE = 0;
     private static final int SHIP_SPAWN_ROTATION_SPEED = 0;
@@ -41,6 +44,7 @@ class PlayerCreator {
 
     Hero createPlayer(ShipConfig shipConfig, boolean shouldSpawnOnGalaxySpawnPosition, RespawnState respawnState, SolGame game, boolean isMouseControl, boolean isNewShip) {
         Vector2 position = findPlayerSpawnPosition(shipConfig, shouldSpawnOnGalaxySpawnPosition, game);
+        logger.info("Spawning player at ({}, {}), isNewShip={}", position.x, position.y, isNewShip);
         game.getCam().setPos(position);
         if (isMouseControl) {
             game.getBeaconHandler().init(game, position);
@@ -56,6 +60,7 @@ class PlayerCreator {
         Pilot pilot = createPilot(game, faction, isMouseControl);
         float money = grantPlayerMoney(shipConfig, respawnState, game);
         HullConfig hull = findHullConfig(shipConfig, respawnState);
+        logger.debug("Configuring hero: hull='{}', money={}", hull.getInternalName(), money);
         String items = findItems(shipConfig, respawnState);
         String waypoints = findWaypoints(shipConfig, respawnState);
         boolean giveAmmo = shouldGiveAmmo(respawnState, isNewShip);

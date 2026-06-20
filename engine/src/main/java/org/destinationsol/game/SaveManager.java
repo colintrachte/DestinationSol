@@ -71,6 +71,7 @@ public class SaveManager {
 
     public static void writeShips(HullConfig hull, float money, List<SolItem> itemsList, Hero hero, HullConfigManager hullConfigManager, Vector2 spawnPosition) {
         String hullName = hullConfigManager.getName(hull);
+        logger.info("Saving ship: hull='{}', money={}, items={}", hullName, (int) money, itemsList.size());
 
         AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
             writeMercs(hero, hullConfigManager);
@@ -139,6 +140,7 @@ public class SaveManager {
         PrintWriter writer;
 
         ItemContainer mercenaries = hero.getMercs();
+        logger.debug("Saving mercenaries...");
 
         List<JsonObject> jsons = new ArrayList<JsonObject>();
 
@@ -168,6 +170,7 @@ public class SaveManager {
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String stringToWrite = gson.toJson(jsons);
+        logger.debug("Writing {} mercenary/mercenaries to save", jsons.size());
 
         // Using PrintWriter because it truncates the file if it exists or creates a new one if it doesn't
         // And truncation is good because we don't want dead mercs respawning
@@ -221,15 +224,18 @@ public class SaveManager {
      * Load last saved ship from file
      */
     public static ShipConfig readShip(HullConfigManager hullConfigs, ItemManager itemManager) {
+        logger.debug("Loading ship from save: {}", Const.SAVE_FILE_NAME);
         IniReader ir = new IniReader(Const.SAVE_FILE_NAME, null);
 
         String hullName = ir.getString("hull", null);
         if (hullName == null) {
+            logger.warn("Save file missing 'hull' field, cannot load ship");
             return null;
         }
 
         HullConfig hull = hullConfigs.getConfig(hullName);
         if (hull == null) {
+            logger.warn("Hull '{}' from save not found in configs, save may be corrupted", hullName);
             return null;
         }
 
@@ -242,6 +248,7 @@ public class SaveManager {
 
         String waypoints = ir.getString("waypoints", "");
 
+        logger.info("Ship loaded: hull='{}', money={}, spawnPos=({}, {})", hullName, money, x, y);
         return new ShipConfig(hull, itemsStr, money, 1, null, itemManager, spawnPos, waypoints);
     }
 

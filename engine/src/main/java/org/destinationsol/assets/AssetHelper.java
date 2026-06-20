@@ -69,6 +69,7 @@ public class AssetHelper {
                      ModuleAwareAssetTypeManager assetTypeManager,
                      ComponentManager componentManager,
                      boolean isMobile) {
+        logger.info("Initializing asset system (mobile={})", isMobile);
         this.assetTypeManager = assetTypeManager;
 
         if (isMobile) {
@@ -88,10 +89,13 @@ public class AssetHelper {
 
         // The NUI widgets are loaded here so that they can be found when reading the UI JSON files (in UIFormat.UIWidgetTypeAdapter)
 //        ReflectFactory reflectFactory = new ReflectionReflectFactory();
+        int widgetCount = 0;
         for (Class<? extends UIWidget> widgetClass : environment.getSubtypesOf(UIWidget.class)) {
             Name moduleName = environment.getModuleProviding(widgetClass);
             widgetLibrary.register(new ResourceUrn(moduleName, new Name(widgetClass.getSimpleName())), widgetClass);
+            widgetCount++;
         }
+        logger.debug("Registered {} NUI widget type(s)", widgetCount);
 
         // TODO inject this
         assetTypeManager.createAssetType(UISkinAsset.class, UISkinAsset::new, "skins");
@@ -103,7 +107,7 @@ public class AssetHelper {
 
         assetTypeManager.switchEnvironment(environment);
         Assets.initialize(this);
-
+        logger.debug("Asset system ready");
     }
 
     public <T extends Asset<U>, U extends AssetData> Optional<T> get(ResourceUrn urn, Class<T> type) {

@@ -30,6 +30,8 @@ import org.destinationsol.game.ship.hulls.HullConfig;
 import org.destinationsol.modules.ModuleManager;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.lang.reflect.Method;
@@ -40,6 +42,7 @@ import java.util.Locale;
 import java.util.Map;
 
 public final class HullConfigManager {
+    private static final Logger logger = LoggerFactory.getLogger(HullConfigManager.class);
     private final ItemManager itemManager;
     private final AbilityCommonConfigs abilityCommonConfigs;
     private final Map<String, HullConfig> nameToConfigMap;
@@ -53,7 +56,7 @@ public final class HullConfigManager {
             try {
                 abilityClasses.put(abilityClass.getSimpleName().replace("Config", "").toLowerCase(Locale.ENGLISH), abilityClass);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Failed to register ability class '{}'", abilityClass.getSimpleName(), e);
             }
         }
     }
@@ -208,7 +211,7 @@ public final class HullConfigManager {
                 Method loadMethod = abilityClasses.get(type).getDeclaredMethod(LOAD_JSON_METHOD_NAME, JSONObject.class, ItemManager.class, AbilityCommonConfig.class);
                 return (AbilityConfig) loadMethod.invoke(null, abNode, manager, commonConfigs.abilityConfigs.get(type));
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Failed to load ability config for type '{}'", type, e);
             }
         }
 

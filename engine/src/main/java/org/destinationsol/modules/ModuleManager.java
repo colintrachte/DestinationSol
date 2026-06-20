@@ -233,6 +233,7 @@ public class ModuleManager implements AutoCloseable {
     }
 
     public void init() throws Exception {
+        logger.info("Initializing module system...");
         try {
             engineModule = moduleConfig.createEngineModule();
             Module nuiModule = moduleFactory.createPackageModule(new ModuleMetadata(new Name("nui"), new Version("2.0.0")),"org.terasology.nui");
@@ -240,6 +241,7 @@ public class ModuleManager implements AutoCloseable {
             // scan for all standard modules
             File modulesRoot = moduleConfig.getModulesPath();
             scanner.scan(registry, modulesRoot);
+            logger.info("Module scan found {} module(s) in '{}'", registry.size(), modulesRoot);
 
             builtInModules = Sets.newHashSet();
             builtInModules.add(engineModule);
@@ -249,14 +251,16 @@ public class ModuleManager implements AutoCloseable {
             Set<Module> requiredModules = Sets.newHashSet();
             requiredModules.addAll(registry);
 
+            logger.info("Loading environment with {} module(s)", requiredModules.size());
             loadEnvironment(requiredModules);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("Module initialization failed", e);
             throw e;
         }
     }
 
     public void loadEnvironment(Set<Module> modules) {
+        logger.info("Loading module environment with {} module(s)", modules.size());
         modules.addAll(builtInModules);
 
         StandardPermissionProviderFactory permissionFactory = new StandardPermissionProviderFactory();
@@ -288,6 +292,7 @@ public class ModuleManager implements AutoCloseable {
         }
 
         environment = new ModuleEnvironment(beanContext, modules, permissionFactory, moduleConfig.getClassLoaderSupplier());
+        logger.debug("Module environment ready");
     }
 
     public ModuleEnvironment getEnvironment() {

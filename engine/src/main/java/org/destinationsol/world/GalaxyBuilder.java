@@ -109,6 +109,7 @@ public class GalaxyBuilder {
             systemGeneratorTypeNames.add(systemGeneratorType.getName());
         }
         worldConfig.setSolarSystemGenerators(systemGeneratorTypeNames);
+        logger.debug("Found {} solar system generator type(s)", solarSystemGeneratorTypes.size());
     }
 
     /**
@@ -124,6 +125,7 @@ public class GalaxyBuilder {
             }
         }
         worldConfig.setFeatureGenerators(featureGeneratorTypeNames);
+        logger.debug("Found {} feature generator type(s)", featureGeneratorTypes.size());
     }
 
     /**
@@ -132,9 +134,11 @@ public class GalaxyBuilder {
      * available.
      */
     public void buildWithRandomSolarSystemGenerators() {
+        logger.info("Building galaxy with {} solar system(s)", worldConfig.getNumberOfSystems());
         activeSolarSystemGenerators.addAll(initializeRandomSolarSystemGenerators());
         positionSolarSystems();
         buildSolarSystems();
+        logger.info("Galaxy built: {} solar system(s) created", builtSolarSystems.size());
     }
 
     /**
@@ -159,7 +163,7 @@ public class GalaxyBuilder {
                 generator.setSolarSystemNumber(i);
                 generatorArrayList.add(generator);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Failed to create solar system generator '{}'", solarSystemGenerator.getName(), e);
             }
         }
         return generatorArrayList;
@@ -174,7 +178,7 @@ public class GalaxyBuilder {
             try {
                 calculateSolarSystemPosition(activeSolarSystemGenerators, generator, generator.getRadius());
             } catch (RuntimeException e) {
-                e.printStackTrace();
+                logger.error("Failed to position solar system generator '{}'", generator, e);
             }
 
             //Printout of generator position for testing (as these positions don't have a representation in the game yet)
@@ -186,6 +190,7 @@ public class GalaxyBuilder {
      * This method initiates the build process of each SolarSystemGenerator instance.
      */
     private void buildSolarSystems() {
+        logger.debug("Building {} solar system(s)...", activeSolarSystemGenerators.size());
         for (SolarSystemGenerator solarSystemGenerator : activeSolarSystemGenerators) {
             builtSolarSystems.add(solarSystemGenerator.build());
         }

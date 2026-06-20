@@ -4,17 +4,24 @@ setlocal enabledelayedexpansion
 echo === DestinationSol Setup ===
 echo.
 
-:: Check for java on PATH
+:: Ensure gradlew.bat is present (must run from project root)
+if not exist "gradlew.bat" (
+    echo ERROR: gradlew.bat not found.
+    echo Make sure you are running this script from the DestinationSol project root.
+    exit /b 1
+)
+
+:: Check for Java on PATH
 java -version >nul 2>&1
 if errorlevel 1 (
     echo Java not found on PATH.
     echo Attempting to install Java 17 via winget...
-    winget install EclipseAdoptium.Temurin.17.JDK --silent
+    winget install EclipseAdoptium.Temurin.17.JDK --silent --accept-package-agreements --accept-source-agreements
     if errorlevel 1 (
         echo.
         echo Automatic install failed. Please install Java 17 manually:
         echo   https://adoptium.net/
-        echo Then re-run this script.
+        echo Then open a new terminal and run setup.bat again.
         exit /b 1
     )
     echo.
@@ -42,15 +49,20 @@ if %MAJOR% LSS 11 (
 echo Java %MAJOR% detected. OK.
 echo.
 
-:: Pre-download all Gradle dependencies and compile
+:: Download all Gradle dependencies and compile
 echo Downloading dependencies and compiling (first run may take several minutes)...
+echo.
 call gradlew.bat :desktop:classes
 if errorlevel 1 (
     echo.
-    echo Build failed. See output above for details.
+    echo Build failed. See the output above for details.
+    echo Common causes:
+    echo   - No internet connection (Gradle needs to download dependencies)
+    echo   - Corporate proxy blocking Maven Central
     exit /b 1
 )
 
 echo.
-echo Setup complete! Run run.bat to launch the game.
+echo Setup complete!
+echo Run run.bat (Command Prompt) or .\run.ps1 (PowerShell) to launch the game.
 endlocal

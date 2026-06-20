@@ -28,6 +28,9 @@ import org.destinationsol.game.drawables.DrawableManager;
 import org.destinationsol.game.drawables.FarDrawable;
 import org.destinationsol.game.ship.FarShip;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,6 +39,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class ObjectManager implements UpdateAwareSystem, AutoCloseable{
+    private static final Logger logger = LoggerFactory.getLogger(ObjectManager.class);
     private static final float MAX_RADIUS_RECALC_AWAIT = 1f;
     private final List<SolObject> myObjs;
     private final List<SolObject> myToRemove;
@@ -365,6 +369,7 @@ public class ObjectManager implements UpdateAwareSystem, AutoCloseable{
 
     @Override
     public void close() throws Exception {
+        logger.debug("Disposing physics world");
         myWorld.dispose();
     }
 }

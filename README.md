@@ -9,19 +9,13 @@
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/MovingBlocks/DestinationSol)
 [![Discord](https://img.shields.io/discord/270264625419911192.svg?label=discord)](http://discord.gg/Terasology)
 
-This is the official open source home for the arcade space shooter Destination Sol, originally started by Milosh Petrov and a small team on [Steam](http://store.steampowered.com/app/342980/) and [SourceForge](http://sourceforge.net/projects/destinationsol)
+**This is a community development fork of Destination Sol (v2.1.0)**, based on the [MovingBlocks/DestinationSol](https://github.com/MovingBlocks/DestinationSol) open source release. It incorporates upstream bug fixes and pull requests that have not yet been merged into the official repo, along with additional crash-debugging improvements and gameplay fixes. See [todo.md](todo.md) for the full change log and known issues.
 
-After receiving highly positive reviews launching as an indie title on Steam Milosh and the remaining team members wanted to focus on different projects, having made Destination Sol primarily to try out the involved technology.
+Destination Sol is an arcade space shooter originally started by Milosh Petrov and a small team on [Steam](http://store.steampowered.com/app/342980/). After releasing as an indie title, the team moved on to other projects and open-sourced the game. The open source group MovingBlocks behind [Terasology](http://terasology.org) stepped in to maintain it.
 
-A call was put out to the player community for a new maintainer, and open source was an option praised by many and already somewhat in place on Sourceforge. The open source group MovingBlocks behind [Terasology](http://terasology.org) stepped in to offer infrastructure and maintenance.
+Destination Sol is licensed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html) (except the soundtrack — see its section below).
 
-Milosh accepted our offer and supported us in moving the game onwards to its new home here on GitHub where we'll set up to accept contributions from anybody willing to help improve Destination Sol and expand on its gameplay.
-
-Destination Sol is now officially licensed under the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0.html) (except soundtrack, see its section below) and available in source code form at [GitHub](https://github.com/MovingBlocks/DestinationSol).
-
-You can download the game on [Steam](http://store.steampowered.com/app/342980/), get it in the [Google Play Store](https://play.google.com/store/apps/details?id=com.miloshpetrov.sol2.android&hl=en), or download the [very latest version from our build server](http://jenkins.terasology.io/teraorg/job/DestinationSol/job/engine/job/develop/lastSuccessfulBuild/artifact/desktop/build/distributions/DestinationSol.zip) (warning: latest build may be unstable)
-
-Feel free to fork the project and contribute pull requests! You can visit a [Destination Sol forum](http://forum.terasology.org/forum/destination-sol.57/) on the Terasology site if you have any questions or would like to discuss the game or contributing.
+You can download the official release on [Steam](http://store.steampowered.com/app/342980/) or the [Google Play Store](https://play.google.com/store/apps/details?id=com.miloshpetrov.sol2.android&hl=en). To build this fork from source see the section below.
 
 Gameplay
 --------
@@ -40,7 +34,7 @@ Warnings get posted if you get close to dangerous ships or may soon collide with
 
 Watch out about buying a new ship if you can only barely afford it - you might need to buy new compatible weaponry too!
 
-Mercenaries will follow you around and should start with a compatible weapon again in v1.4.1. They'll pick up items as well and keep them, greedy little buggers! But then they drop everything again on death, so ...
+Mercenaries will follow you around and start with a compatible weapon. They'll pick up items as well and keep them, greedy little buggers! But then they drop everything again on death, so ...
 
 Controls
 --------
@@ -76,35 +70,66 @@ Building and running from source
 
 You need **Java 11 or newer** (Java 17 recommended). All other dependencies are downloaded automatically by Gradle on first build.
 
-Run any commands from the project root directory (where you cloned / extracted the project).
+Run all commands from the **project root directory** (where you cloned the project).
 
 ### Quick start (Windows)
 
-Two convenience scripts are provided in the project root:
+Two convenience scripts are included in the project root.
 
-1. **First-time setup** — checks for Java, installs it via `winget` if missing, and pre-compiles everything:
-   ```
-   setup.bat          (Command Prompt)
-   .\setup.ps1        (PowerShell — may need: Set-ExecutionPolicy RemoteSigned -Scope CurrentUser)
-   ```
-
-2. **Launch the game**:
-   ```
-   run.bat            (Command Prompt)
-   .\run.ps1          (PowerShell)
-   ```
-
-### Manual / cross-platform
+**1. First-time setup** — checks for Java (installs Java 17 via `winget` if missing), then downloads all Gradle dependencies and compiles the project. Only needed once after a fresh clone:
 
 ```
-# Windows (Command Prompt or PowerShell)
+setup.bat          (Command Prompt)
+.\setup.ps1        (PowerShell)
+```
+
+> **PowerShell note:** if you see an execution-policy error, run this once and retry:
+> ```
+> Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+> ```
+
+**2. Launch the game from source:**
+
+```
+run.bat            (Command Prompt)
+.\run.ps1          (PowerShell)
+```
+
+Both scripts print the log file path before launch and remind you to check it if the game exits with an error.
+
+### Manual steps (Windows, Linux, macOS)
+
+**Verify Java:**
+```sh
+java -version   # must print version 11 or higher
+```
+
+**Download dependencies and compile (first time only):**
+```sh
+# Windows
+gradlew.bat :desktop:classes
+
+# Linux / macOS — make the wrapper executable first if needed
+chmod +x gradlew
+./gradlew :desktop:classes
+```
+
+**Run from source:**
+```sh
+# Windows
 gradlew.bat :desktop:run
 
 # Linux / macOS
 ./gradlew :desktop:run
 ```
 
-### Other tasks
+### Logs and crash reports
+
+When running from source, the Gradle run task automatically enables debug-level file logging. Everything at INFO level and above is written to **`destinationsol.log`** in the project root (rolls over at 10 MB, keeps 3 backups). This is the first place to look after any crash.
+
+Unhandled exceptions that reach the top-level crash reporter also write a timestamped `crash-<date>.log` to the same directory.
+
+### Other Gradle tasks
 
 | Task | Command |
 |------|---------|
@@ -112,7 +137,18 @@ gradlew.bat :desktop:run
 | Build distributable zip (no bundled JRE) | `gradlew :desktop:distZipUnbundledJRE` |
 | Build distributable zip (with bundled JREs) | `gradlew :desktop:distZipBundleJREs` |
 
-IntelliJ IDEA will import the project automatically when you open the project directory — a pre-configured **Desktop** run configuration is included.
+### Troubleshooting
+
+| Symptom | Fix |
+|---------|-----|
+| `'java' is not recognized` / `java: command not found` | Install Java 17 from [adoptium.net](https://adoptium.net/) and re-open your terminal |
+| Build fails with `UnsupportedClassVersionError` | Your Java is too old — Java 11+ required, Java 17 recommended |
+| `gradlew: Permission denied` (Linux / macOS) | Run `chmod +x gradlew` first |
+| Game crashes immediately on launch | Open `destinationsol.log` in the project root — the full stack trace is there |
+| Gradle hangs downloading dependencies | Check your internet connection; corporate proxies may need configuring in `~/.gradle/gradle.properties` |
+| `.\setup.ps1` blocked by execution policy | Run `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` in an admin PowerShell, then retry |
+
+IntelliJ IDEA imports the project automatically when you open the project directory — a pre-configured **Desktop** run configuration is included. Create an empty file named `devBuild` in the project root to tell the engine to load assets directly from source rather than from the compiled output.
 
 For Android a little extra setup is needed. See instructions [here](https://github.com/MovingBlocks/DestSolAndroid).
 

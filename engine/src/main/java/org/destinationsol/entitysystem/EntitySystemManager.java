@@ -33,11 +33,15 @@ import org.terasology.gestalt.entitysystem.event.impl.EventReceiverMethodSupport
 import org.terasology.gestalt.entitysystem.event.impl.EventSystemImpl;
 import org.terasology.gestalt.module.ModuleEnvironment;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.inject.Inject;
 import java.lang.reflect.Modifier;
 import java.util.List;
 
 public class EntitySystemManager {
+    private static final Logger logger = LoggerFactory.getLogger(EntitySystemManager.class);
 
     private static EntityManager entityManager;
     private final EventSystem eventSystem = new EventSystemImpl();
@@ -55,14 +59,19 @@ public class EntitySystemManager {
             }
         }
         entityManager = new CoreEntityManager(stores);
+        logger.debug("Entity system initialized with {} component type(s)", stores.size());
 
         this.context = context;
     }
 
     public void initialise() {
+        logger.debug("Registering ECS event receivers...");
+        int count = 0;
         for (EventReceiver eventReceiver : context.getBeans(EventReceiver.class)) {
             eventReceiverMethodSupport.register(eventReceiver, eventSystem);
+            count++;
         }
+        logger.debug("Registered {} ECS event receiver(s)", count);
     }
 
     public void sendEvent(Event event, Component... components) {

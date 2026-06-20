@@ -1,7 +1,8 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-    Checks for Java 11+, installs it if missing, then compiles DestinationSol.
+    Checks for Java 11+, installs it if missing, then downloads all Gradle
+    dependencies and compiles DestinationSol. Run once after a fresh clone.
 #>
 
 Set-StrictMode -Version Latest
@@ -9,6 +10,13 @@ $ErrorActionPreference = 'Stop'
 
 Write-Host "=== DestinationSol Setup ===" -ForegroundColor Cyan
 Write-Host ""
+
+# Ensure we are in the project root
+if (-not (Test-Path "gradlew.bat")) {
+    Write-Host "ERROR: gradlew.bat not found." -ForegroundColor Red
+    Write-Host "Make sure you are running this script from the DestinationSol project root."
+    exit 1
+}
 
 function Get-JavaMajorVersion {
     $javaOutput = & java -version 2>&1 | Select-String 'version'
@@ -47,12 +55,17 @@ Write-Host "Java $major detected. OK." -ForegroundColor Green
 Write-Host ""
 
 Write-Host "Downloading dependencies and compiling (first run may take several minutes)..."
+Write-Host ""
 & .\gradlew.bat :desktop:classes
 if ($LASTEXITCODE -ne 0) {
     Write-Host ""
-    Write-Host "Build failed. See output above for details." -ForegroundColor Red
+    Write-Host "Build failed. See the output above for details." -ForegroundColor Red
+    Write-Host "Common causes:"
+    Write-Host "  - No internet connection (Gradle needs to download dependencies)"
+    Write-Host "  - Corporate proxy blocking Maven Central"
     exit $LASTEXITCODE
 }
 
 Write-Host ""
-Write-Host "Setup complete! Run run.ps1 to launch the game." -ForegroundColor Green
+Write-Host "Setup complete!" -ForegroundColor Green
+Write-Host "Run run.bat (Command Prompt) or .\run.ps1 (PowerShell) to launch the game."

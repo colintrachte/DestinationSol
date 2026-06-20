@@ -96,7 +96,7 @@ public class ConsoleImpl implements Console {
                 InjectionHelper.inject(commandsObject, context);
                 MethodCommand.registerAvailable(commandsObject, this, game, context);
             } catch (InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
+                logger.error("Failed to instantiate command class '{}'", commands.getName(), e);
             }
         }
     }
