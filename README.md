@@ -74,14 +74,45 @@ Note: You can select either pure keyboard, keyboard + mouse, or controller (in t
 Building and running from source
 --------
 
-You only need Java 11 installed to run Destination Sol from source.
+You need **Java 11 or newer** (Java 17 recommended). All other dependencies are downloaded automatically by Gradle on first build.
 
-Run any commands in the project root directory (where you cloned / extracted the project to, using a command prompt / terminal).
+Run any commands from the project root directory (where you cloned / extracted the project).
 
-* Download / clone the [source from GitHub](https://github.com/MovingBlocks/DestinationSol)
-* To run from the command line: `gradlew run` (on Linux you might need to use `./gradlew run`)
-* IntelliJ should import the project automatically when you open the project directory
-* Distributions (Windows, Linux, Mac) can be created locally by running: `gradlew distZipBundleJREs`
+### Quick start (Windows)
+
+Two convenience scripts are provided in the project root:
+
+1. **First-time setup** — checks for Java, installs it via `winget` if missing, and pre-compiles everything:
+   ```
+   setup.bat          (Command Prompt)
+   .\setup.ps1        (PowerShell — may need: Set-ExecutionPolicy RemoteSigned -Scope CurrentUser)
+   ```
+
+2. **Launch the game**:
+   ```
+   run.bat            (Command Prompt)
+   .\run.ps1          (PowerShell)
+   ```
+
+### Manual / cross-platform
+
+```
+# Windows (Command Prompt or PowerShell)
+gradlew.bat :desktop:run
+
+# Linux / macOS
+./gradlew :desktop:run
+```
+
+### Other tasks
+
+| Task | Command |
+|------|---------|
+| Compile only | `gradlew :desktop:classes` |
+| Build distributable zip (no bundled JRE) | `gradlew :desktop:distZipUnbundledJRE` |
+| Build distributable zip (with bundled JREs) | `gradlew :desktop:distZipBundleJREs` |
+
+IntelliJ IDEA will import the project automatically when you open the project directory — a pre-configured **Desktop** run configuration is included.
 
 For Android a little extra setup is needed. See instructions [here](https://github.com/MovingBlocks/DestSolAndroid).
 

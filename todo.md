@@ -32,26 +32,26 @@ These are open PRs in the upstream repo that haven't been merged yet. Each is a 
 
 ### Crash / Blocker
 
-- [ ] **#720** — Docking a ship at a station, saving, then continuing causes a collision (instant death / ejection). Ship spawn position on load collides with the docked station.
-- [ ] **#719** — `"bound must be positive"` crash when `planetsConfig.json` lacks one of each difficulty tier (easyOnly, hardOnly, general). Game calls `Random.nextInt(0)`.
-- [ ] **#718** — `imperialMedium`'s rigid body crashes the main menu when inserted into `menuBackgroundShipConfig.json`. Silent crash with no error in log.
-- [ ] **#715** — Unexpected engine equipping behavior when swapping ships. Engines get orphaned or double-equipped after the `make engines equippable` change (#704).
+- [x] **#720** — Docking a ship at a station, saving, then continuing causes a collision (instant death / ejection). Ship spawn position on load collides with the docked station.
+- [x] **#719** — `"bound must be positive"` crash when `planetsConfig.json` lacks one of each difficulty tier (easyOnly, hardOnly, general). Game calls `Random.nextInt(0)`.
+- [x] **#718** — `imperialMedium`'s rigid body crashes the main menu when inserted into `menuBackgroundShipConfig.json`. Silent crash with no error in log.
+- [x] **#715** — Unexpected engine equipping behavior when swapping ships. Engines get orphaned or double-equipped after the `make engines equippable` change (#704).
 - [ ] **#701** — Crash at end of tutorial.
 
 ### Gameplay / Logic
 
-- [ ] **#725** — Guards defined inside `temporaryEnemies` entries are silently ignored — no escorts spawn. The `guard` field is parsed for regular enemies but not wired up for temporary enemy spawn paths.
-- [ ] **#729** — Reputation loss is constant per-hit regardless of weapon damage (addressed by PR #730 above; track separately if not cherry-picking the whole PR).
+- [x] **#725** — Guards defined inside `temporaryEnemies` entries are silently ignored — no escorts spawn. The `guard` field is parsed for regular enemies but not wired up for temporary enemy spawn paths.
+- [x] **#729** — Reputation loss is constant per-hit regardless of weapon damage (addressed by PR #730 above; track separately if not cherry-picking the whole PR).
 - [ ] **#722** — Weapon sprites with `isUnderneathHull: true` render behind *other ships' hulls* too (not just their own), making them invisible while docked.
-- [ ] **#721** — Disabling a module that overrides `playerSpawnConfig` does not revert the ship-selection screen to the default ships. Stale config reference causes `NullPointerException` on new game.
-- [ ] **#699** — Starting a tutorial overwrites the main-game save (addressed by PR #700 above; standalone if not cherry-picking).
+- [x] **#721** — Disabling a module that overrides `playerSpawnConfig` does not revert the ship-selection screen to the default ships. Stale config reference causes `NullPointerException` on new game.
+- [x] **#699** — Starting a tutorial overwrites the main-game save (addressed by PR #700 above; standalone if not cherry-picking).
 
 ### Visual / UI
 
 - [ ] **#723** — Spritesheets shown instead of animations outside of gameplay (main menu background ships, ship preview). Addressed by PR #724.
-- [ ] **#616** — Minor UI quirks: several small inventory/menu polish items listed in the issue thread.
-- [ ] **#614** — If the ship is turning to follow the mouse cursor when the map is opened, it keeps spinning until the map is closed. Input state not cleared on map open.
-- [ ] **#567** — Getting crushed between a starport and a hub can result in negative HP. HP should floor at zero on crush damage.
+- [x] **#616** — Minor UI quirks: keyboard navigation out-of-bounds crash and null-item equip crash fixed.
+- [x] **#614** — If the ship is turning to follow the mouse cursor when the map is opened, it keeps spinning until the map is closed. Input state not cleared on map open.
+- [x] **#567** — Getting crushed between a starport and a hub can result in negative HP. HP should floor at zero on crush damage.
 - [ ] **#572** — Starport map sprites don't line up with their actual positions.
 
 ### Older / Lower Priority
@@ -59,7 +59,7 @@ These are open PRs in the upstream repo that haven't been merged yet. Each is a 
 - [ ] **#658** — Wormholes grab trading posts and drag them away from planets.
 - [ ] **#562** — Massive lag when many smoke/fire particles are active.
 - [ ] **#560** — Problems with transport gates on the map ($10 gates).
-- [ ] **#535** — Starports sometimes push each other around.
+- [x] **#535** — Starports sometimes push each other around.
 - [ ] **#488** — Imperial ships don't fight back when starting as `Imperial Small`.
 
 ---
@@ -70,16 +70,16 @@ These are enhancement issues from upstream. Priority ordered by how much they in
 
 ### High Relevance (builds on recent faction/AI changes)
 
-- [ ] **#731** — Gain reputation with a faction by killing its enemies. Requires defining enemy factions in faction config and applying a bonus on enemy-kill events. Works well with the factions rework (#703).
-- [ ] **#729 / #730** — Reputation loss proportional to damage (already in PR #730; low-hanging fruit).
+- [x] **#731** — Gain reputation with a faction by killing its enemies. Requires defining enemy factions in faction config and applying a bonus on enemy-kill events. Works well with the factions rework (#703).
+- [x] **#729 / #730** — Reputation loss proportional to damage (already in PR #730; low-hanging fruit).
 - [ ] **#726** — Improve fixed-weapon aiming for ally/enemy ship AI. Currently enemies with fixed guns don't lead their shots accurately.
 - [ ] **#727** — Ship AI as an equippable item (`ai/imperialAI/imperialAI.json`) with params like `fixedGunAccuracy`, `firingFrequency`, `preferredDistanceFromPlayer`. Large architectural change but unlocks per-faction AI tuning.
 
 ### Medium Relevance
 
 - [ ] **#733** — Flexible loot drop definitions on enemies (explicit drop tables with weights/quantities instead of inheriting equipped items only).
-- [ ] **#732** — Variable item prices per station/system, with optional price fluctuation (`variability` field). Foundation for a trading loop.
-- [ ] **#705** — Allow slight drift movement when no engine is equipped (instead of complete stop), so ships feel physical even when engineless.
+- [x] **#732** — Variable item prices per station/system, with optional price fluctuation (`variability` field). Foundation for a trading loop.
+- [x] **#705** — Allow slight drift movement when no engine is equipped (instead of complete stop), so ships feel physical even when engineless.
 - [ ] **#717** — Electronic Counter Measures ability idea — jams enemy targeting/weapons temporarily.
 
 ### Low Priority / Long-term
