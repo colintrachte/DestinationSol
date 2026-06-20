@@ -78,6 +78,7 @@ public class UIFormat extends AbstractAssetFileFormat<UIData> {
     public static final String TYPE_FIELD = "type";
 
     private static final Logger logger = LoggerFactory.getLogger(UIFormat.class);
+    private static final Set<String> loggedNonInjectableTypes = new HashSet<>();
     private final WidgetLibrary library;
     private final BeanContext beanContext;
 
@@ -178,8 +179,10 @@ public class UIFormat extends AbstractAssetFileFormat<UIData> {
                 // try injectable variant
                 element = beanContext.getBean(elementMetadata.getType());
             } catch (BeanResolutionException e) {
-                logger.warn("UIWidget  type {} is not injectable (if it is should -" +
-                        " mark it with @Service or it's constructor with @Inject", elementMetadata.getId());
+                String typeId = elementMetadata.getId().toString();
+                if (loggedNonInjectableTypes.add(typeId)) {
+                    logger.debug("UIWidget type {} is not injectable — using direct instantiation (mark with @Service/@Inject if injection is needed)", typeId);
+                }
                 element = elementMetadata.newInstance();
             }
             if (id != null) {

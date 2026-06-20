@@ -9,7 +9,7 @@
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/MovingBlocks/DestinationSol)
 [![Discord](https://img.shields.io/discord/270264625419911192.svg?label=discord)](http://discord.gg/Terasology)
 
-**This is a community development fork of Destination Sol (v2.1.0)**, based on the [MovingBlocks/DestinationSol](https://github.com/MovingBlocks/DestinationSol) open source release. It incorporates upstream bug fixes and pull requests that have not yet been merged into the official repo, along with additional crash-debugging improvements and gameplay fixes. See [todo.md](todo.md) for the full change log and known issues.
+**This is a personal development fork of Destination Sol (v2.1.0)**, forked from [MovingBlocks/DestinationSol](https://github.com/MovingBlocks/DestinationSol). It incorporates upstream bug fixes and open pull requests not yet merged there, along with additional crash-debugging improvements and gameplay fixes. See [todo.md](todo.md) for the full change log and known issues.
 
 Destination Sol is an arcade space shooter originally started by Milosh Petrov and a small team on [Steam](http://store.steampowered.com/app/342980/). After releasing as an indie title, the team moved on to other projects and open-sourced the game. The open source group MovingBlocks behind [Terasology](http://terasology.org) stepped in to maintain it.
 
