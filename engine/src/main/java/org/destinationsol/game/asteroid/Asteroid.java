@@ -41,10 +41,11 @@ import java.util.List;
 public class Asteroid implements SolObject {
     private static final float MIN_SPLIT_SZ = .25f;
     private static final float MIN_BURN_SZ = .3f;
-    private static final float SZ_TO_LIFE = 20f;
+    private static final float SZ_TO_LIFE = 40f;
     private static final float SPD_TO_ATM_DMG = SZ_TO_LIFE * .11f;
     private static final float MAX_SPLIT_SPD = 1f;
     private static final float DUR = .5f;
+    private static final float CHIP_CHANCE = 0.2f;
 
     private final Body body;
     private final Vector2 position;
@@ -66,7 +67,7 @@ public class Asteroid implements SolObject {
         this.drawables = drawables;
         this.body = body;
         this.size = size;
-        life = SZ_TO_LIFE * size;
+        life = SZ_TO_LIFE * size * size;
         position = new Vector2();
         velocity = new Vector2();
         mass = body.getMass();
@@ -154,7 +155,7 @@ public class Asteroid implements SolObject {
     }
 
     private void setParamsFromBody() {
-        position.set(body.getPosition());
+        position.set(body.getWorldCenter());
         velocity.set(body.getLinearVelocity());
         angle = body.getAngle() * MathUtils.radDeg;
     }
@@ -181,22 +182,54 @@ public class Asteroid implements SolObject {
         if (MIN_SPLIT_SZ > size) {
             return;
         }
+
         float sclSum = 0;
+
         while (sclSum < .7f * size * size) {
-            float velocityAngle = SolRandom.randomFloat(180);
-            Vector2 velocity = new Vector2();
-            SolMath.fromAl(velocity, velocityAngle, SolRandom.randomFloat(0, .5f) * MAX_SPLIT_SPD);
-            velocity.add(velocity);
+
+            float velocityAngle = SolRandom.randomFloat(360);
+
+            Vector2 fragmentVelocity = new Vector2();
+
+            SolMath.fromAl(
+                fragmentVelocity,
+                velocityAngle,
+                SolRandom.randomFloat(0, .5f) * MAX_SPLIT_SPD
+            );
+
+            // inherit parent asteroid momentum
+            fragmentVelocity.add(this.velocity);
+
             Vector2 newPos = new Vector2();
-            SolMath.fromAl(newPos, velocityAngle, SolRandom.randomFloat(0, size / 2));
+
+            SolMath.fromAl(
+                newPos,
+                velocityAngle,
+                SolRandom.randomFloat(0, size / 2)
+            );
+
             newPos.add(position);
+
             float sz = size * SolRandom.randomFloat(.25f, .5f);
-            Asteroid a = game.getAsteroidBuilder().buildNew(game, newPos, velocity, sz, removeController);
+
+            Asteroid a = game.getAsteroidBuilder().buildNew(
+                game,
+                newPos,
+                fragmentVelocity,
+                sz,
+                removeController
+            );
+
             game.getObjectManager().addObjDelayed(a);
+
             sclSum += a.size * a.size;
         }
+
         float thrMoney = size * 40f * SolRandom.randomFloat(.3f, 1);
-        List<MoneyItem> moneyItems = game.getItemMan().moneyToItems(thrMoney);
+
+        List<MoneyItem> moneyItems =
+            game.getItemMan().moneyToItems(thrMoney);
+
         for (MoneyItem mi : moneyItems) {
             throwLoot(game, mi);
         }
@@ -215,9 +248,65 @@ public class Asteroid implements SolObject {
     }
 
     @Override
-    public void receiveDmg(float dmg, SolGame game, Vector2 position, DmgType dmgType) {
+    public void receiveDmg(
+        float dmg,
+        SolGame game,
+        Vector2 hitPos,
+        DmgType dmgType
+    ) {
         life -= dmg;
-        game.getContext().get(SpecialSounds.class).playHit(game, this, position, dmgType);
+
+        if (
+            life > 0 &&
+            size >= MIN_SPLIT_SZ &&
+            SolRandom.randomFloat(1f) < CHIP_CHANCE
+        ) {
+            spawnChip(game, hitPos);
+        }
+
+        game.getContext()
+            .get(SpecialSounds.class)
+            .playHit(game, this, hitPos, dmgType);
+    }
+
+    private void spawnChip(SolGame game, Vector2 hitPos) {
+
+        float chipSize =
+            size * SolRandom.randomFloat(.05f, .12f);
+            
+        if (size < 0.4f) {
+            return;
+        }
+        Vector2 chipVelocity = new Vector2();
+
+        float angle = SolRandom.randomFloat(360);
+
+        SolMath.fromAl(
+            chipVelocity,
+            angle,
+            SolRandom.randomFloat(.3f, 1.0f)
+        );
+
+        // inherit parent asteroid momentum
+        chipVelocity.add(this.velocity);
+
+        Vector2 chipPos;
+
+        if (hitPos != null) {
+            chipPos = new Vector2(hitPos);
+        } else {
+            chipPos = new Vector2(position);
+        }
+
+        Asteroid chip = game.getAsteroidBuilder().buildNew(
+            game,
+            chipPos,
+            chipVelocity,
+            chipSize,
+            removeController
+        );
+        
+        game.getObjectManager().addObjDelayed(chip);
     }
 
     @Override

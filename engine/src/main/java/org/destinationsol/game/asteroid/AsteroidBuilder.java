@@ -22,6 +22,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.MassData;
 import org.destinationsol.Const;
 import org.destinationsol.assets.Assets;
 import org.destinationsol.common.SolColor;
@@ -62,6 +63,7 @@ public class AsteroidBuilder {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.density = density;
         fixtureDef.friction = Const.FRICTION;
+        fixtureDef.restitution = 0.4f;
         fixtureDef.shape = new CircleShape();
         fixtureDef.shape.setRadius(rad);
         fixtureDef.isSensor = sensor;
@@ -89,6 +91,13 @@ public class AsteroidBuilder {
         Body body;
         if (MAX_BALL_SZ < size) {
             body = collisionMeshLoader.getBodyAndSprite(game.getObjectManager().getWorld(), texture, size, BodyDef.BodyType.DynamicBody, position, angle, drawables, DENSITY, DrawableLevel.BODIES);
+            // Move the center of mass to the body origin so the asteroid rotates about its visual center.
+            // getMassData().I is already inertia about the body origin, so it needs no adjustment.
+            MassData md = body.getMassData();
+            if (md.center.len2() > 1e-6f) {
+                md.center.set(0, 0);
+                body.setMassData(md);
+            }
         } else {
             body = buildBall(game, position, angle, size / 2, DENSITY, false);
             RectSprite s = SpriteManager.createSprite(texture.name, size, 0, 0, new Vector2(), DrawableLevel.BODIES, 0, 0, SolColor.WHITE, false);

@@ -130,6 +130,9 @@ public class BodyHandlerSystem implements EventReceiver {
     public EventResult onDeletion(DeletionEvent event, EntityRef entity) {
         Body body = referenceToBodyObjects.get(entity);
         referenceToBodyObjects.remove(entity);
+        if (body == null) {
+            return EventResult.CONTINUE;
+        }
         body.getWorld().destroyBody(body);
 
         return EventResult.CONTINUE;

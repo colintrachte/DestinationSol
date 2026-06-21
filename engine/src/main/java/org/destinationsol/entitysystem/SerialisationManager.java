@@ -33,6 +33,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -69,9 +70,9 @@ public final class SerialisationManager {
                 componentBuilder.setTypeName(component.getClass().toString().replaceFirst("class ", ""));
 
                 for (Field field : component.getClass().getDeclaredFields()) {
-                    EntityData.Field.Builder fieldBuilder = EntityData.Field.newBuilder();
-                    fieldBuilder.setName(field.getName());
-                    fieldBuilder.setType(field.getType().toString());
+                    if (Modifier.isStatic(field.getModifiers())) {
+                        continue;
+                    }
                     field.setAccessible(true);
 
                     String value = "";
@@ -98,9 +99,11 @@ public final class SerialisationManager {
                         value = ((ResourceUrn) field.get(component)).toString();
                         break;
                     default:
-                        logger.error("Trying to serialise unknown data-type: '{}'", field);
-                        break;
+                        continue;
                     }
+                    EntityData.Field.Builder fieldBuilder = EntityData.Field.newBuilder();
+                    fieldBuilder.setName(field.getName());
+                    fieldBuilder.setType(field.getType().toString());
                     fieldBuilder.setValue(ByteString.copyFrom(value.getBytes()));
                     componentBuilder.addField(fieldBuilder);
                 }
@@ -155,7 +158,6 @@ public final class SerialisationManager {
                         componentObjectField.set(componentObject, new ResourceUrn(value));
                         break;
                     default:
-                        logger.error("Trying to deserialise unknown data-type: '{}'", componentObjectField);
                         break;
                     }
                 }

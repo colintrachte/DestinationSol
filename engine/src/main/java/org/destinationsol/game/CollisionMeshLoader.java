@@ -307,7 +307,6 @@ public class CollisionMeshLoader {
         FixtureDef fd = new FixtureDef();
         fd.density = density;
         fd.friction = Const.FRICTION;
-        Vector2 orig;
         boolean found = attachFixture(body, tex.name, fd, scale);
         if (!found) {
             DebugOptions.MISSING_PHYSICS_ACTION.handle("Could not find physics data for " + tex.name);
@@ -317,8 +316,7 @@ public class CollisionMeshLoader {
             fd.shape.dispose();
         }
 
-        orig = getOrigin(tex.name, 1);
-        RectSprite s = SpriteManager.createSprite(tex.name, scale, orig.x - .5f, orig.y - .5f, new Vector2(), level, 0, 0, SolColor.WHITE, false);
+        RectSprite s = SpriteManager.createSprite(tex.name, scale, 0, 0, new Vector2(), level, 0, 0, SolColor.WHITE, false);
         drawables.add(s);
 
         return body;

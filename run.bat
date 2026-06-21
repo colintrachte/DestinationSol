@@ -28,4 +28,5 @@ if %EXIT_CODE% neq 0 (
 )
 
 endlocal
+pause
 exit /b %EXIT_CODE%
