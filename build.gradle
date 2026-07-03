@@ -13,15 +13,15 @@ repositories {
     mavenCentral()
 
     // Repos for LibGDX
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+    maven { url = "https://oss.sonatype.org/content/repositories/releases/" }
 
     // Terasology Artifactory for any shared libs
     maven {
-        url "https://artifactory.terasology.io/artifactory/virtual-repo-live"
+        url = "https://artifactory.terasology.io/artifactory/virtual-repo-live"
     }
 
-    maven { url "https://maven.google.com" }
+    maven { url = "https://maven.google.com" }
 }
 
 // Helper that returns a list of all local Destination Sol module projects
@@ -63,7 +63,7 @@ idea {
             runConfigurations {
                 "Desktop"(Application) {
                     mainClass = 'org.destinationsol.desktop.SolDesktop'
-                    moduleName 'DestinationSol.desktop.main'
+                    moduleName = 'DestinationSol.desktop.main'
                     workingDirectory = rootDir
                     jvmArgs = '-splash:engine/src/main/resources/assets/textures/mainMenu/mainMenuLogo.png -Xms256m -Xmx1024m -Dlog4j.configurationFile=log4j2-debug.xml'
                     programParameters = '-noSplash -noCrashReport'

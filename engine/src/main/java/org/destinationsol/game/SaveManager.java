@@ -202,9 +202,7 @@ public class SaveManager {
      * @return A boolean corresponding to the resources existence
      */
     public static boolean resourceExists(String fileName) {
-        String path = getResourcePath(fileName);
-
-        return new FileHandle(new File(path)).exists();
+        return new FileHandle(new File(getResourcePath(fileName))).exists();
     }
 
     /**

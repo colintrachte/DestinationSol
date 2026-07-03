@@ -60,9 +60,7 @@ public class IniReader {
             second = !second;
         }
 
-        String path = SaveManager.getResourcePath(fileName);
-
-        FileHandle file = new FileHandle(new File(path));
+        FileHandle file = new FileHandle(new File(SaveManager.getResourcePath(fileName)));
         file.writeString(stringBuilder.toString(), false);
     }
 
@@ -83,9 +81,7 @@ public class IniReader {
     }
 
     private List<String> fileToLines(String fileName) {
-        String path = SaveManager.getResourcePath(fileName);
-
-        FileHandle file = new FileHandle(new File(path));
+        FileHandle file = new FileHandle(new File(SaveManager.getResourcePath(fileName)));
 
         ArrayList<String> res = new ArrayList<>();
         if (!file.exists()) {

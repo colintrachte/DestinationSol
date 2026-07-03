@@ -97,8 +97,8 @@ public final class SolDesktop {
             logger.warn("Failed to get splash screen", e);
         }
 
-        boolean useSplash = (splash != null) && Stream.of(argv).noneMatch(s -> s.equals(NO_SPLASH_SCREEN));
-        if (useSplash) {
+        boolean showSplash = Stream.of(argv).noneMatch(s -> s.equals(NO_SPLASH_SCREEN));
+        if (splash != null && showSplash) {
             Graphics2D splashScreenGraphics = splash.createGraphics();
             Rectangle splashBounds = splash.getBounds();
             splashScreenGraphics.setColor(LOGO_COLOUR);
@@ -128,7 +128,7 @@ public final class SolDesktop {
         handleCrashReporting(argv);
 
 
-        if (useSplash) {
+        if (splash != null && showSplash) {
             splash.close();
         }
         // Everything is set up correctly, launch the application
@@ -235,7 +235,10 @@ public final class SolDesktop {
 
         @Override
         public boolean useSecurityManager() {
-            return true;
+            // The JVM Security Manager was permanently removed in JDK 25 (JEP 486 fully
+            // disallows it, with no opt-back-in flag), so module sandboxing via
+            // ModuleSecurityManager/ModuleSecurityPolicy can no longer function.
+            return false;
         }
 
         @Override

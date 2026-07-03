@@ -184,8 +184,13 @@ public class Asteroid implements SolObject {
         }
 
         float sclSum = 0;
+        List<Vector2> fragmentPositions = new ArrayList<>();
+        List<Float> fragmentSizes = new ArrayList<>();
 
         while (sclSum < .7f * size * size) {
+
+            float sz = size * SolRandom.randomFloat(.25f, .5f);
+            Vector2 newPos = findFragmentSpot(sz, fragmentPositions, fragmentSizes);
 
             float velocityAngle = SolRandom.randomFloat(360);
 
@@ -200,18 +205,6 @@ public class Asteroid implements SolObject {
             // inherit parent asteroid momentum
             fragmentVelocity.add(this.velocity);
 
-            Vector2 newPos = new Vector2();
-
-            SolMath.fromAl(
-                newPos,
-                velocityAngle,
-                SolRandom.randomFloat(0, size / 2)
-            );
-
-            newPos.add(position);
-
-            float sz = size * SolRandom.randomFloat(.25f, .5f);
-
             Asteroid a = game.getAsteroidBuilder().buildNew(
                 game,
                 newPos,
@@ -221,6 +214,8 @@ public class Asteroid implements SolObject {
             );
 
             game.getObjectManager().addObjDelayed(a);
+            fragmentPositions.add(newPos);
+            fragmentSizes.add(sz);
 
             sclSum += a.size * a.size;
         }
@@ -233,6 +228,34 @@ public class Asteroid implements SolObject {
         for (MoneyItem mi : moneyItems) {
             throwLoot(game, mi);
         }
+    }
+
+    // Spreads fragments so they don't spawn already overlapping each other. Packing
+    // several rocks into the parent's old footprint hands Box2D a pile of mutually
+    // overlapping bodies to resolve on the very next step; with each procedural rock
+    // carrying several collision fixtures, resolving that overlap can stall the frame
+    // instead of producing a clean debris burst.
+    private Vector2 findFragmentSpot(float fragmentSize, List<Vector2> placedPositions, List<Float> placedSizes) {
+        Vector2 candidate = new Vector2();
+        for (int attempt = 0; attempt < 12; attempt++) {
+            SolMath.fromAl(candidate, SolRandom.randomFloat(360), SolRandom.randomFloat(0, size));
+            candidate.add(position);
+
+            boolean overlaps = false;
+            for (int i = 0; i < placedPositions.size(); i++) {
+                float requiredDist = fragmentSize / 2 + placedSizes.get(i) / 2;
+                if (candidate.dst2(placedPositions.get(i)) < requiredDist * requiredDist) {
+                    overlaps = true;
+                    break;
+                }
+            }
+            if (!overlaps) {
+                return new Vector2(candidate);
+            }
+        }
+        // Give up avoiding overlap after enough attempts - Box2D can resolve a
+        // handful of overlaps fine; this only guards against packing many at once.
+        return new Vector2(candidate);
     }
 
     private void throwLoot(SolGame game, SolItem item) {
@@ -298,15 +321,21 @@ public class Asteroid implements SolObject {
             chipPos = new Vector2(position);
         }
 
-        Asteroid chip = game.getAsteroidBuilder().buildNew(
-            game,
-            chipPos,
-            chipVelocity,
-            chipSize,
-            removeController
-        );
-        
-        game.getObjectManager().addObjDelayed(chip);
+        // spawnChip can be reached from SolContactListener.postSolve(), which Box2D
+        // calls while the world is mid-step - creating a body here would trip its
+        // "world not locked" assertion. Defer the actual build until the step
+        // currently running has returned.
+        game.getObjectManager().runDelayed(() -> {
+            Asteroid chip = game.getAsteroidBuilder().buildNew(
+                game,
+                chipPos,
+                chipVelocity,
+                chipSize,
+                removeController
+            );
+
+            game.getObjectManager().addObjDelayed(chip);
+        });
     }
 
     @Override

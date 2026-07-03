@@ -80,14 +80,14 @@ public class OggSoundManager {
         // logger.debug("Playing sound: {}", sound.getUrn().toString());
 
         // Perform some initial argument validation
-        if (source == null && position == null) {
-            throw new AssertionError("Either position or source must be non-null");
+        if (position == null) {
+            if (source == null) {
+                throw new AssertionError("Either position or source must be non-null");
+            }
+            position = source.getPosition();
         }
         if (source == null && sound.getLoopTime() > 0) {
             throw new AssertionError("Attempted to loop a sound without a parent object: " + sound.getUrn());
-        }
-        if (position == null) {
-            position = source.getPosition();
         }
 
         // Calculate the volume multiplier for the sound

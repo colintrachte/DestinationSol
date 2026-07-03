@@ -22,14 +22,15 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.MassData;
 import org.destinationsol.Const;
 import org.destinationsol.assets.Assets;
 import org.destinationsol.common.SolColor;
 import org.destinationsol.common.SolRandom;
-import org.destinationsol.game.CollisionMeshLoader;
 import org.destinationsol.game.RemoveController;
 import org.destinationsol.game.SolGame;
+import org.destinationsol.game.asteroid.procedural.AsteroidShape;
+import org.destinationsol.game.asteroid.procedural.RockCollision;
+import org.destinationsol.game.asteroid.procedural.RockMesh;
 import org.destinationsol.game.drawables.Drawable;
 import org.destinationsol.game.drawables.DrawableLevel;
 import org.destinationsol.game.drawables.RectSprite;
@@ -38,17 +39,22 @@ import org.destinationsol.game.drawables.SpriteManager;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class AsteroidBuilder {
     private static final float DENSITY = 10f;
     private static final float MAX_A_ROT_SPD = .5f;
     private static final float MAX_BALL_SZ = .2f;
-    private final CollisionMeshLoader collisionMeshLoader;
+    // Each point becomes one Box2D triangle fixture (see RockCollision), so keep this
+    // modest - a debris field of these rocks overlapping (e.g. a split/chip burst)
+    // pays for fixture-pair narrow-phase cost roughly quadratically in this count.
+    private static final int MIN_ROCK_POINTS = 6;
+    private static final int MAX_ROCK_POINTS = 9;
     private final List<TextureAtlas.AtlasRegion> textures;
+    private final Random rockRandom = new Random();
 
     @Inject
     public AsteroidBuilder() {
-        collisionMeshLoader = new CollisionMeshLoader("engine:asteroids");
         textures = Assets.listTexturesMatching("engine:asteroid_.*");
     }
 
@@ -90,14 +96,23 @@ public class AsteroidBuilder {
         ArrayList<Drawable> drawables = new ArrayList<>();
         Body body;
         if (MAX_BALL_SZ < size) {
-            body = collisionMeshLoader.getBodyAndSprite(game.getObjectManager().getWorld(), texture, size, BodyDef.BodyType.DynamicBody, position, angle, drawables, DENSITY, DrawableLevel.BODIES);
-            // Move the center of mass to the body origin so the asteroid rotates about its visual center.
-            // getMassData().I is already inertia about the body origin, so it needs no adjustment.
-            MassData md = body.getMassData();
-            if (md.center.len2() > 1e-6f) {
-                md.center.set(0, 0);
-                body.setMassData(md);
-            }
+            BodyDef bodyDef = new BodyDef();
+            bodyDef.type = BodyDef.BodyType.DynamicBody;
+            bodyDef.angle = angle * MathUtils.degRad;
+            bodyDef.angularDamping = 0;
+            bodyDef.position.set(position);
+            bodyDef.linearDamping = 0;
+            body = game.getObjectManager().getWorld().createBody(bodyDef);
+
+            // Procedural silhouette: a jittered-radius perimeter triangulated as a
+            // fan from (0,0), so it rotates about its own visual center by
+            // construction - no mass-data recentering hack needed.
+            int points = SolRandom.randomInt(MIN_ROCK_POINTS, MAX_ROCK_POINTS + 1);
+            float variance = SolRandom.randomFloat(.25f, .45f);
+            RockMesh mesh = AsteroidShape.generate(size / 2, variance, points, rockRandom);
+            RockCollision.attachTriangleFixtures(body, mesh, 1f, DENSITY, Const.FRICTION);
+
+            drawables.add(new ProceduralAsteroidDrawable(mesh, texture, SolColor.WHITE, DrawableLevel.BODIES));
         } else {
             body = buildBall(game, position, angle, size / 2, DENSITY, false);
             RectSprite s = SpriteManager.createSprite(texture.name, size, 0, 0, new Vector2(), DrawableLevel.BODIES, 0, 0, SolColor.WHITE, false);

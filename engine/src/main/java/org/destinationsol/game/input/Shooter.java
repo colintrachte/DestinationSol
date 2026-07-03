@@ -93,10 +93,13 @@ public class Shooter {
         if (gun2 != null) {
             ProjectileConfig projConfig = gun2.config.clipConf.projConfig;
             float g2PS = projConfig.speed + projConfig.acc; // for simplicity
-            if (projSpeed < g2PS) {
+            if (gun == null || projSpeed < g2PS) {
                 projSpeed = g2PS;
                 gun = gun2;
             }
+        }
+        if (gun == null) {
+            return;
         }
 
         Vector2 gunRelPos = ship.getHull().getGunMount(gun == gun2).getRelPos();

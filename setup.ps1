@@ -53,9 +53,21 @@ if ($major -lt 17) {
     exit 1
 }
 if ($major -lt 25) {
-    Write-Host "Java $major detected. This is enough to run Gradle, but the project" -ForegroundColor Yellow
-    Write-Host "compiles with a Java 25 toolchain - Gradle will download one automatically" -ForegroundColor Yellow
-    Write-Host "the first time (needs an internet connection)." -ForegroundColor Yellow
+    # Gradle's own daemon-JVM auto-provisioning (gradle-daemon-jvm.properties) can't
+    # download a JDK on its own - it needs one installed locally, so we install it here
+    # rather than letting the build fail with a "no defined toolchain download url" error.
+    Write-Host "Java $major detected. The project needs a Java 25 toolchain to compile." -ForegroundColor Yellow
+    Write-Host "Attempting to install Java 25 via winget..."
+    try {
+        winget install EclipseAdoptium.Temurin.25.JDK --silent --accept-package-agreements --accept-source-agreements
+        Write-Host ""
+        Write-Host "Java 25 installed. Please open a new terminal and run setup.ps1 again." -ForegroundColor Green
+    } catch {
+        Write-Host ""
+        Write-Host "Automatic install failed: $_" -ForegroundColor Red
+        Write-Host "Please install Java 25 manually from https://adoptium.net/ then re-run."
+    }
+    exit 0
 } else {
     Write-Host "Java $major detected. OK." -ForegroundColor Green
 }

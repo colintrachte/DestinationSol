@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.badlogic.gdx.graphics.g2d.PolygonSpriteBatch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
@@ -38,11 +39,13 @@ import javax.inject.Inject;
 
 public class CommonDrawer implements ResizeSubscriber {
     private final SpriteBatch spriteBatch;
+    private final PolygonSpriteBatch polygonBatch;
     private final BitmapFont font;
     private final float originalFontHeight;
     private final GlyphLayout layout;
     private final OrthographicCamera orthographicCamera;
     private final Viewport screenViewport;
+    private boolean polygonBatchActive;
 
     private DisplayDimensions displayDimensions;
 
@@ -51,6 +54,7 @@ public class CommonDrawer implements ResizeSubscriber {
         this.displayDimensions = displayDimensions;
 
         spriteBatch = new SpriteBatch();
+        polygonBatch = new PolygonSpriteBatch();
 
         font = Assets.getFont("engine:main").getBitmapFont();
         originalFontHeight = font.getXHeight();
@@ -65,15 +69,47 @@ public class CommonDrawer implements ResizeSubscriber {
 
     public void setMatrix(Matrix4 matrix) {
         spriteBatch.setProjectionMatrix(matrix);
+        polygonBatch.setProjectionMatrix(matrix);
     }
 
     public void begin() {
         orthographicCamera.update();
         spriteBatch.begin();
+        polygonBatchActive = false;
     }
 
     public void end() {
+        toSpriteBatch();
         spriteBatch.end();
+    }
+
+    // Textured triangle-mesh draws (procedural asteroids) need PolygonSpriteBatch,
+    // which can't be active at the same time as the regular SpriteBatch - so
+    // switching between quad draws and mesh draws means ending one and starting
+    // the other, mirroring how setAdditive() toggles blend state.
+    private void toSpriteBatch() {
+        if (polygonBatchActive) {
+            polygonBatch.end();
+            polygonBatchActive = false;
+            spriteBatch.begin();
+        }
+    }
+
+    private void toPolygonBatch() {
+        if (!polygonBatchActive) {
+            spriteBatch.end();
+            polygonBatch.begin();
+            polygonBatchActive = true;
+        }
+    }
+
+    /**
+     * Draws a textured triangle mesh in packed PolygonSpriteBatch vertex format
+     * (x, y, colorFloatBits, u, v per vertex, u/v already in atlas texture space).
+     */
+    public void drawMesh(TextureRegion tex, float[] vertices, short[] triangles) {
+        toPolygonBatch();
+        polygonBatch.draw(tex.getTexture(), vertices, 0, vertices.length, triangles, 0, triangles.length);
     }
 
     public void drawString(String s, float x, float y, float fontSize, boolean centered, Color col) {
@@ -85,6 +121,7 @@ public class CommonDrawer implements ResizeSubscriber {
             return;
         }
 
+        toSpriteBatch();
         font.setColor(col);
         font.getData().setScale(fontSize / originalFontHeight);
         // http://www.badlogicgames.com/wordpress/?p=3658
@@ -111,6 +148,7 @@ public class CommonDrawer implements ResizeSubscriber {
 
     public void draw(TextureRegion tr, float width, float height, float origX, float origY, float x, float y,
                      float rot, Color tint) {
+        toSpriteBatch();
         setTint(tint);
         spriteBatch.draw(tr, x - origX, y - origY, origX, origY, width, height, 1, 1, rot);
 //        setTint(Color.CYAN);
@@ -157,16 +195,19 @@ public class CommonDrawer implements ResizeSubscriber {
 
     public void dispose() {
         spriteBatch.dispose();
+        polygonBatch.dispose();
         font.dispose();
     }
 
     public SpriteBatch getSpriteBatch() {
+        toSpriteBatch();
         return spriteBatch;
     }
 
     public void setAdditive(boolean additive) {
         int dstFunc = additive ? GL20.GL_ONE : GL20.GL_ONE_MINUS_SRC_ALPHA;
         spriteBatch.setBlendFunction(GL20.GL_SRC_ALPHA, dstFunc);
+        polygonBatch.setBlendFunction(GL20.GL_SRC_ALPHA, dstFunc);
     }
 
     @Override

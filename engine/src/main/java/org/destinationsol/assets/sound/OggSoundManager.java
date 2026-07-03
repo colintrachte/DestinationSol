@@ -162,14 +162,14 @@ public class OggSoundManager implements UpdateAwareSystem {
         OggSound sound = playableSound.getOggSound();
 
         // Perform some initial argument validation
-        if (source == null && position == null) {
-            throw new AssertionError("Either position or source must be non-null");
+        if (position == null) {
+            if (source == null) {
+                throw new AssertionError("Either position or source must be non-null");
+            }
+            position = source.getPosition();
         }
         if (source == null && sound.getLoopTime() > 0) {
             throw new AssertionError("Attempted to loop a sound without a parent object: " + sound.getUrn());
-        }
-        if (position == null) {
-            position = source.getPosition();
         }
 
         float volume = getVolume(game, position, volumeMultiplier, sound, game.getCam());

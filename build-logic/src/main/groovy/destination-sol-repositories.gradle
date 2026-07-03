@@ -10,13 +10,13 @@ repositories {
 
     // Repos for LibGDX
     maven {
-        url "https://oss.sonatype.org/content/repositories/snapshots/"
+        url = "https://oss.sonatype.org/content/repositories/snapshots/"
         content {
             includeGroupByRegex('com\\.badlogicgames.gdx(\\..+)?')
         }
     }
     maven {
-        url "https://oss.sonatype.org/content/repositories/releases/"
+        url = "https://oss.sonatype.org/content/repositories/releases/"
         content {
             includeGroupByRegex('com\\.badlogicgames.gdx(\\..+)?')
         }
@@ -24,7 +24,7 @@ repositories {
 
     // everit-org JSON schema dependency
     maven {
-        url "https://jitpack.io"
+        url = "https://jitpack.io"
         content {
             includeModule('com.github.everit-org.json-schema', 'org.everit.json.schema')
         }
@@ -32,7 +32,7 @@ repositories {
 
     // Terasology Artifactory for any shared libs
     maven {
-        url "https://artifactory.terasology.io/artifactory/virtual-repo-live"
+        url = "https://artifactory.terasology.io/artifactory/virtual-repo-live"
         content {
             includeGroupByRegex('org\\.terasology(\\..+)?')
             includeGroupByRegex('org\\.destinationsol(\\..+)?')

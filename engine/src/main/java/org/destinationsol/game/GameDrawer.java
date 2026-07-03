@@ -87,6 +87,11 @@ public class GameDrawer {
         myDrawer.drawCircle(tex, center, radius, col, width, vh);
     }
 
+    public void drawMesh(TextureRegion tex, float[] vertices, short[] triangles) {
+        maybeChangeAdditive(false);
+        myDrawer.drawMesh(tex, vertices, triangles);
+    }
+
     public void maybeChangeAdditive(boolean additive) {
         if (myCurrAdditive == additive) {
             return;

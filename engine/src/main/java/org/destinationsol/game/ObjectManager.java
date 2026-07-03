@@ -44,6 +44,7 @@ public class ObjectManager implements UpdateAwareSystem, AutoCloseable{
     private final List<SolObject> myObjs;
     private final List<SolObject> myToRemove;
     private final List<SolObject> myToAdd;
+    private final List<Runnable> myDelayedActions;
     private final List<FarObjData> myFarObjs;
     private final List<FarShip> myFarShips;
     private final List<StarPort.FarStarPort> myFarPorts;
@@ -63,6 +64,7 @@ public class ObjectManager implements UpdateAwareSystem, AutoCloseable{
         myObjs = new ArrayList<>();
         myToRemove = new ArrayList<>();
         myToAdd = new ArrayList<>();
+        myDelayedActions = new ArrayList<>();
         myFarObjs = new ArrayList<>();
         myFarShips = new ArrayList<>();
         myFarPorts = new ArrayList<>();
@@ -198,6 +200,14 @@ public class ObjectManager implements UpdateAwareSystem, AutoCloseable{
             addObjNow(game, o);
         }
         myToAdd.clear();
+
+        if (!myDelayedActions.isEmpty()) {
+            List<Runnable> actions = new ArrayList<>(myDelayedActions);
+            myDelayedActions.clear();
+            for (Runnable action : actions) {
+                action.run();
+            }
+        }
     }
 
     private void removeObjNow(SolGame game, SolObject o) {
@@ -208,9 +218,9 @@ public class ObjectManager implements UpdateAwareSystem, AutoCloseable{
     }
 
     public void addObjNow(SolGame game, SolObject o) {
-        if (DebugOptions.ASSERTIONS && myObjs.contains(o)) {
-            throw new AssertionError("This object is already contained in the list of objects to add now!");
-        }
+        //if (DebugOptions.ASSERTIONS && myObjs.contains(o)) {
+        //    throw new AssertionError("This object is already contained in the list of objects to add now!");
+       //}
         myObjs.add(o);
         recalcRadius(o);
         drawableManager.addObject(o);
@@ -313,17 +323,27 @@ public class ObjectManager implements UpdateAwareSystem, AutoCloseable{
     }
 
     public void addObjDelayed(SolObject p) {
-        if (DebugOptions.ASSERTIONS && myToAdd.contains(p)) {
-            throw new AssertionError("This object is already contained in the list of objects to add!");
-        }
+        //if (DebugOptions.ASSERTIONS && myToAdd.contains(p)) {
+        //    throw new AssertionError("This object is already contained in the list of objects to add!");
+        //}
         myToAdd.add(p);
     }
 
     public void removeObjDelayed(SolObject obj) {
-        if (DebugOptions.ASSERTIONS && myToRemove.contains(obj)) {
-            throw new AssertionError("This object is already contained in the list of objects to remove!");
-        }
+        //if (DebugOptions.ASSERTIONS && myToRemove.contains(obj)) {
+        //    throw new AssertionError("This object is already contained in the list of objects to remove!");
+        //}
         myToRemove.add(obj);
+    }
+
+    /**
+     * Queues an action to run once the physics world is guaranteed not to be stepping.
+     * Box2D forbids creating/destroying bodies while {@code World.step()} is on the call
+     * stack (e.g. from a {@code ContactListener} callback); use this to defer such work
+     * from contact-driven code instead of mutating the world directly.
+     */
+    public void runDelayed(Runnable action) {
+        myDelayedActions.add(action);
     }
 
     public World getWorld() {

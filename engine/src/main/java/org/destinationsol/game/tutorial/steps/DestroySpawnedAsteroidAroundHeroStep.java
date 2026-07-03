@@ -43,11 +43,16 @@ public class DestroySpawnedAsteroidAroundHeroStep extends DestroyObjectsStep {
         this.minDistance = minDistance;
         this.spawnRadius = spawnRadius;
     }
+    private static final int MAX_PLACEMENT_ATTEMPTS = 50;
+
     @Override
     public void start() {
         Hero hero = game.getHero();
         Vector2 asteroidPosition = hero.getPosition().cpy();
-        while (!game.isPlaceEmpty(asteroidPosition, true)) {
+        // isPlaceEmpty(..., true) also rejects positions inside a planet's atmosphere.
+        // If the hero starts within minDistance+spawnRadius of a planet, every candidate
+        // in range would fail that check forever - bound the search instead of hanging.
+        for (int attempt = 0; attempt < MAX_PLACEMENT_ATTEMPTS && !game.isPlaceEmpty(asteroidPosition, true); attempt++) {
             asteroidPosition.set(
                     hero.getPosition().x + SolRandom.randomFloat(minDistance, minDistance + spawnRadius),
                     hero.getPosition().y + SolRandom.randomFloat(minDistance, minDistance + spawnRadius)

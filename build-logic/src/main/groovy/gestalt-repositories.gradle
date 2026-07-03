@@ -15,7 +15,7 @@ repositories {
 
     // Terasology Artifactory for any shared libs
     maven {
-        url "https://artifactory.terasology.io/artifactory/virtual-repo-live"
+        url = "https://artifactory.terasology.io/artifactory/virtual-repo-live"
         content {
             includeGroupByRegex('org\\.terasology.gestalt(\\..+)?')
             // A copy of Java-semver is hosted here too

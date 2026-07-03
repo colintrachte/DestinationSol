@@ -41,11 +41,16 @@ public class FlyToRandomWaypointAroundHeroStep extends FlyToWaypointStep {
         this.radius = radius;
     }
 
+    private static final int MAX_PLACEMENT_ATTEMPTS = 50;
+
     @Override
     public void start() {
         Hero hero = game.getHero();
         waypointPosition = hero.getPosition().cpy();
-        while (!game.isPlaceEmpty(waypointPosition, true)) {
+        // isPlaceEmpty(..., true) also rejects positions inside a planet's atmosphere.
+        // If the hero starts within minDistance+radius of a planet, every candidate in
+        // range would fail that check forever - bound the search instead of hanging.
+        for (int attempt = 0; attempt < MAX_PLACEMENT_ATTEMPTS && !game.isPlaceEmpty(waypointPosition, true); attempt++) {
             waypointPosition.set(
                     hero.getPosition().x + SolRandom.randomFloat(-(minDistance + radius), minDistance + radius),
                     hero.getPosition().y + SolRandom.randomFloat(minDistance, minDistance + radius)

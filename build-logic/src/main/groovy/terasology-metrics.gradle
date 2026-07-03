@@ -16,7 +16,7 @@ configurations {
 
 dependencies {
     // Config for our code analytics lives in a centralized repo: https://github.com/MovingBlocks/TeraConfig
-    codeMetrics(group: 'org.terasology.config', name: 'codemetrics', version: '1.6.3', ext: 'zip')
+    codeMetrics("org.terasology.config:codemetrics:1.6.3@zip")
 
     pmd('net.sourceforge.pmd:pmd-core:7.25.0')
     pmd('net.sourceforge.pmd:pmd-java:7.25.0')

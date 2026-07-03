@@ -101,6 +101,8 @@ public class ModuleManager implements AutoCloseable {
             // The hull config exposes a box2d body instance
             "com.badlogic.gdx.physics",
             "com.badlogic.gdx.physics.box2d",
+            // Collection types (e.g. gdx Array) used by module systems like AstroGravitySystem
+            "com.badlogic.gdx.utils",
             // NUI doesn't use gestalt's @API annotations anymore, so they are replicated here
             "org.terasology.input",
             "org.terasology.input.device",

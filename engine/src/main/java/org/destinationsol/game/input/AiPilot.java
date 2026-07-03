@@ -78,11 +78,9 @@ public class AiPilot implements Pilot {
         float maxIdleDist = getMaxIdleDist(hullConfig);
         myDestProvider.update(game, shipPos, maxIdleDist, hullConfig, nearestEnemy);
 
-        Boolean canShoot = canShoot0(ship);
-        boolean canShootUnfixed = canShoot == null;
-        if (canShootUnfixed) {
-            canShoot = true;
-        }
+        Boolean canShootResult = canShoot0(ship);
+        boolean canShootUnfixed = canShootResult == null;
+        boolean canShoot = canShootResult != null ? canShootResult : true;
         Planet np = game.getPlanetManager().getNearestPlanet();
         boolean nearGround = np.isNearGround(shipPos);
 
@@ -97,7 +95,7 @@ public class AiPilot implements Pilot {
             if (nearestEnemy != null) {
                 battle = myDestProvider.shouldManeuver(canShoot, nearestEnemy, nearGround);
             }
-            if (battle != null) {
+            if (battle != null && nearestEnemy != null) {
                 dest = myBattleDestProvider.getDest(ship, nearestEnemy, np, battle, game.getTimeStep(), canShootUnfixed, nearGround);
                 shouldStopNearDest = myBattleDestProvider.shouldStopNearDest();
                 destVelocity = nearestEnemy.getVelocity();

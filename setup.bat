@@ -47,9 +47,22 @@ if %MAJOR% LSS 17 (
     exit /b 1
 )
 if %MAJOR% LSS 25 (
-    echo Java %MAJOR% detected. This is enough to run Gradle, but the project
-    echo compiles with a Java 25 toolchain - Gradle will download one automatically
-    echo the first time ^(needs an internet connection^).
+    :: Gradle's own daemon-JVM auto-provisioning (gradle-daemon-jvm.properties) can't
+    :: download a JDK on its own - it needs one installed locally, so we install it here
+    :: rather than letting the build fail with a "no defined toolchain download url" error.
+    echo Java %MAJOR% detected. The project needs a Java 25 toolchain to compile.
+    echo Attempting to install Java 25 via winget...
+    winget install EclipseAdoptium.Temurin.25.JDK --silent --accept-package-agreements --accept-source-agreements
+    if errorlevel 1 (
+        echo.
+        echo Automatic install failed. Please install Java 25 manually:
+        echo   https://adoptium.net/
+        echo Then open a new terminal and run setup.bat again.
+        exit /b 1
+    )
+    echo.
+    echo Java 25 installed. Please open a new terminal and run setup.bat again.
+    exit /b 0
 ) else (
     echo Java %MAJOR% detected. OK.
 )

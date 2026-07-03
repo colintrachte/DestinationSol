@@ -94,6 +94,7 @@ These are enhancement issues from upstream. Priority ordered by how much they in
 
 - [ ] **#659** — Follow-up cleanup items from the Gestalt-DI migration. Unfinished wiring and leftover legacy patterns.
 - [ ] **#617** — Refactor ECS rubble further. Current implementation is an intermediate state.
+- [ ] NUI skin/widget warnings on startup: `UISkinFormat.java:150` fails to resolve `UIInputBind` (skips its style info), and `UIFormat.java:236` doesn't recognize the `image` field on `InteractHint`. Pre-existing, unrelated to the Java 25 migration.
 - [ ] **#416** — Migrate desktop logging from log4j to Logback/SLF4J (PR #501 is a stale attempt at this).
 - [ ] **#590** — ECS wrapper for the sound system (open PR, no reviewer activity).
 - [ ] **#648** — Expand the API surface exposed to modules (open PR by BenjaminAmos).

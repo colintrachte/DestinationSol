@@ -14,6 +14,9 @@
  * limitations under the License.
  */
 
+import groovy.xml.XmlNodePrinter
+import groovy.xml.XmlParser
+
 plugins {
     id 'destination-sol-common'
     id 'destination-sol-jre'
@@ -22,32 +25,41 @@ plugins {
 project.ext.mainClassName = "org.destinationsol.desktop.SolDesktop"
 
 dependencies {
+    constraints {
+        implementation "org.lwjgl:lwjgl:$lwjgl3Version"
+        implementation "org.lwjgl:lwjgl-glfw:$lwjgl3Version"
+        implementation "org.lwjgl:lwjgl-jemalloc:$lwjgl3Version"
+        implementation "org.lwjgl:lwjgl-openal:$lwjgl3Version"
+        implementation "org.lwjgl:lwjgl-opengl:$lwjgl3Version"
+        implementation "org.lwjgl:lwjgl-stb:$lwjgl3Version"
+    }
+
     implementation project(":engine")
     implementation "com.badlogicgames.gdx:gdx-backend-lwjgl3:$gdxVersion"
     implementation "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
     implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
 
-    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.24.3'
-    implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl', version: '2.24.3'
-    implementation group: 'org.terasology.crashreporter', name: 'cr-destsol', version: '4.0.0'
+    implementation "org.apache.logging.log4j:log4j-core:2.24.3"
+    implementation "org.apache.logging.log4j:log4j-slf4j2-impl:2.24.3"
+    implementation "org.terasology.crashreporter:cr-destsol:4.0.0"
 }
 
 tasks.register('run', JavaExec) {
     dependsOn classes
     //TODO: Remove extra args when the splash screen works on Macs again - see https://github.com/MovingBlocks/DestinationSol/issues/414
     if (System.properties["os.name"].toLowerCase().contains("mac")) {
-        jvmArgs = ["-splash:../engine/src/main/resources/assets/textures/mainMenu/mainMenuLogo.png", "-XstartOnFirstThread", "-Dlog4j.configurationFile=log4j2-debug.xml"]
+        jvmArgs = ["-splash:../engine/src/main/resources/assets/textures/mainMenu/mainMenuLogo.png", "-XstartOnFirstThread", "-Dlog4j.configurationFile=log4j2-debug.xml", "--enable-native-access=ALL-UNNAMED"]
         String[] runArgs = ["-noSplash"]
         args runArgs
     } else {
-        jvmArgs = ["-splash:../engine/src/main/resources/assets/textures/mainMenu/mainMenuLogo.png", "-Dlog4j.configurationFile=log4j2-debug.xml"]
+        jvmArgs = ["-splash:../engine/src/main/resources/assets/textures/mainMenu/mainMenuLogo.png", "-Dlog4j.configurationFile=log4j2-debug.xml", "--enable-native-access=ALL-UNNAMED"]
     }
     mainClass = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
     workingDir = rootProject.projectDir
-    ignoreExitValue true
+    ignoreExitValue = true
 }
 
 jar {
@@ -62,7 +74,7 @@ jar {
 }
 
 tasks.register('moduleDist', Copy) {
-    into("${distsDirectory.getAsFile().get()}/app/modules")
+    into("${base.distsDirectory.getAsFile().get()}/app/modules")
     rootProject.destinationSolModules().each { module ->
         dependsOn ":modules:$module.name" + ":jar"
         from("$rootDir/modules/${module.name}/build/libs") {
@@ -76,7 +88,7 @@ tasks.register('copyLaunchers', Copy) {
 
     from("$rootDir/launcher")
     include("*.sh", "*.exe")
-    into("${distsDirectory.getAsFile().get()}/app")
+    into("${base.distsDirectory.getAsFile().get()}/app")
 }
 
 tasks.register('libsDist', Copy) {
@@ -86,7 +98,7 @@ tasks.register('libsDist', Copy) {
 
     from jar
     from configurations.runtimeClasspath
-    into("${distsDirectory.getAsFile().get()}/app/libs")
+    into("${base.distsDirectory.getAsFile().get()}/app/libs")
 }
 
 tasks.register('distUnbundledJRE') {
@@ -103,7 +115,7 @@ tasks.register('distZipUnbundledJRE', Zip) {
     group 'Distribution'
 
     dependsOn distUnbundledJRE
-    from "${distsDirectory.getAsFile().get()}/app"
+    from "${base.distsDirectory.getAsFile().get()}/app"
     archiveFileName = "DestinationSol.zip"
 }
 
@@ -120,7 +132,7 @@ tasks.register('distZipBundleJREs', Zip) {
     group 'Distribution'
 
     dependsOn distBundleJREs
-    from "${distsDirectory.getAsFile().get()}/app"
+    from "${base.distsDirectory.getAsFile().get()}/app"
     archiveFileName = "DestinationSol.zip"
 }
 
