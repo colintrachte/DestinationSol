@@ -65,7 +65,7 @@ idea {
                     mainClass = 'org.destinationsol.desktop.SolDesktop'
                     moduleName 'DestinationSol.desktop.main'
                     workingDirectory = rootDir
-                    jvmArgs = '-splash:engine/src/main/resources/assets/textures/mainMenu/mainMenuLogo.png -Xms256m -Xmx1024m -Dlog4j.configuration=log4j-debug.properties'
+                    jvmArgs = '-splash:engine/src/main/resources/assets/textures/mainMenu/mainMenuLogo.png -Xms256m -Xmx1024m -Dlog4j.configurationFile=log4j2-debug.xml'
                     programParameters = '-noSplash -noCrashReport'
                 }
             }

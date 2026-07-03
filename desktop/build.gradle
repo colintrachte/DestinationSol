@@ -28,7 +28,8 @@ dependencies {
     implementation "com.badlogicgames.gdx:gdx-box2d-platform:$gdxVersion:natives-desktop"
     implementation "com.badlogicgames.gdx-controllers:gdx-controllers-desktop:$gdxControllersVersion"
 
-    implementation group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.25'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-core', version: '2.24.3'
+    implementation group: 'org.apache.logging.log4j', name: 'log4j-slf4j2-impl', version: '2.24.3'
     implementation group: 'org.terasology.crashreporter', name: 'cr-destsol', version: '4.0.0'
 }
 
@@ -36,11 +37,11 @@ tasks.register('run', JavaExec) {
     dependsOn classes
     //TODO: Remove extra args when the splash screen works on Macs again - see https://github.com/MovingBlocks/DestinationSol/issues/414
     if (System.properties["os.name"].toLowerCase().contains("mac")) {
-        jvmArgs = ["-splash:../engine/src/main/resources/assets/textures/mainMenu/mainMenuLogo.png", "-XstartOnFirstThread", "-Dlog4j.configuration=log4j-debug.properties"]
+        jvmArgs = ["-splash:../engine/src/main/resources/assets/textures/mainMenu/mainMenuLogo.png", "-XstartOnFirstThread", "-Dlog4j.configurationFile=log4j2-debug.xml"]
         String[] runArgs = ["-noSplash"]
         args runArgs
     } else {
-        jvmArgs = ["-splash:../engine/src/main/resources/assets/textures/mainMenu/mainMenuLogo.png", "-Dlog4j.configuration=log4j-debug.properties"]
+        jvmArgs = ["-splash:../engine/src/main/resources/assets/textures/mainMenu/mainMenuLogo.png", "-Dlog4j.configurationFile=log4j2-debug.xml"]
     }
     mainClass = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
@@ -143,7 +144,7 @@ eclipse {
                         <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
                         <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="org.destinationsol.desktop.SolDesktop"/>
                         <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="DestinationSol-desktop"/>
-                        <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-splash:../engine/src/main/resources/assets/textures/mainMenu/mainMenuLogo.png -Dlog4j.configuration=log4j-debug.properties"/>
+                        <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-splash:../engine/src/main/resources/assets/textures/mainMenu/mainMenuLogo.png -Dlog4j.configurationFile=log4j2-debug.xml"/>
                         <stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:DestinationSol-engine}"/>
                     </launchConfiguration>
                 ''')
@@ -172,6 +173,6 @@ tasks.register('afterEclipseImport') {
 
 tasks.withType(JavaExec).configureEach {
     if (System.getProperty('DEBUG', 'false') == 'true') {
-        jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9099', '-Dlog4j.configuration=log4j-debug.properties'
+        jvmArgs '-Xdebug', '-Xrunjdwp:transport=dt_socket,server=y,suspend=y,address=9099', '-Dlog4j.configurationFile=log4j2-debug.xml'
     }
 }

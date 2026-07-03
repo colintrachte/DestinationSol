@@ -42,7 +42,7 @@ group = "org.destinationsol.engine"
 version = engineVersion
 
 dependencies {
-    api group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    api group: 'org.slf4j', name: 'slf4j-api', version: '2.0.17'
     api group: 'com.google.code.gson', name: 'gson', version: '2.14.0'
     api group: 'com.google.guava', name: 'guava', version: '33.6.0-jre'
 

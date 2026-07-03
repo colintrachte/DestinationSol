@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="STDOUT" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} %5p [%t] (%F:%L) - %m%n"/>
+        </Console>
+        <RollingFile name="FILE" fileName="destinationsol.log" filePattern="destinationsol-%i.log.gz">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p [%t] (%F:%L) - %m%n"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="3"/>
+            <ThresholdFilter level="DEBUG" onMatch="ACCEPT" onMismatch="DENY"/>
+        </RollingFile>
+    </Appenders>
+    <Loggers>
+        <Logger name="deng" level="DEBUG"/>
+        <Logger name="org.terasology.gestalt.module.sandbox.PermissionSet" level="ERROR"/>
+        <Logger name="org.terasology.reflection.copy.CopyStrategyLibrary" level="ERROR"/>
+        <Logger name="org.terasology.gestalt.entitysystem.event.impl.EventReceiverMethodSupport" level="ERROR"/>
+        <Logger name="org.reflections" level="ERROR"/>
+
+        <Root level="DEBUG">
+            <AppenderRef ref="STDOUT"/>
+            <AppenderRef ref="FILE"/>
+        </Root>
+    </Loggers>
+</Configuration>
