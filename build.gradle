@@ -52,7 +52,7 @@ import org.jetbrains.gradle.ext.Application
 idea {
     project {
         // Set JDK
-        jdkName = '1.8'
+        jdkName = '25'
         wildcards -= '!?*.groovy'
 
         settings {
@@ -105,7 +105,7 @@ idea {
 
             // Sets sourceCompatibility within IntelliJ (without this root build having the Java plugin applied)
             whenMerged { project ->
-                project.jdk.languageLevel = 'JDK_1_8'
+                project.jdk.languageLevel = 'JDK_25'
             }
         }
     }
