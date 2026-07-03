@@ -5,7 +5,7 @@ plugins {
     id 'destination-sol-ide'
     id 'destination-sol-repositories'
     id 'terasology-metrics'
-    id 'org.ajoberstar.grgit' version '5.0.0' apply false
+    id 'org.ajoberstar.grgit' version '5.3.3' apply false
 }
 
 repositories {
