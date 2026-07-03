@@ -15,11 +15,11 @@ if not exist "gradlew.bat" (
 java -version >nul 2>&1
 if errorlevel 1 (
     echo Java not found on PATH.
-    echo Attempting to install Java 17 via winget...
-    winget install EclipseAdoptium.Temurin.17.JDK --silent --accept-package-agreements --accept-source-agreements
+    echo Attempting to install Java 25 via winget...
+    winget install EclipseAdoptium.Temurin.25.JDK --silent --accept-package-agreements --accept-source-agreements
     if errorlevel 1 (
         echo.
-        echo Automatic install failed. Please install Java 17 manually:
+        echo Automatic install failed. Please install Java 25 manually:
         echo   https://adoptium.net/
         echo Then open a new terminal and run setup.bat again.
         exit /b 1
@@ -41,12 +41,18 @@ if "%MAJOR%"=="1" (
     for /f "tokens=2 delims=." %%m in ("%RAW%") do set MAJOR=%%m
 )
 
-if %MAJOR% LSS 11 (
-    echo Java %MAJOR% detected but Java 11 or newer is required.
-    echo Please install Java 17 from https://adoptium.net/ and re-run.
+if %MAJOR% LSS 17 (
+    echo Java %MAJOR% detected but Java 17 or newer is required ^(Gradle 9 will not run on anything older^).
+    echo Please install Java 25 from https://adoptium.net/ and re-run.
     exit /b 1
 )
-echo Java %MAJOR% detected. OK.
+if %MAJOR% LSS 25 (
+    echo Java %MAJOR% detected. This is enough to run Gradle, but the project
+    echo compiles with a Java 25 toolchain - Gradle will download one automatically
+    echo the first time ^(needs an internet connection^).
+) else (
+    echo Java %MAJOR% detected. OK.
+)
 echo.
 
 :: Download all Gradle dependencies and compile

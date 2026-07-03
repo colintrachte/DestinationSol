@@ -1,8 +1,9 @@
 #Requires -Version 5.1
 <#
 .SYNOPSIS
-    Checks for Java 11+, installs it if missing, then downloads all Gradle
-    dependencies and compiles DestinationSol. Run once after a fresh clone.
+    Checks for Java 17+ (25 recommended), installs it if missing, then
+    downloads all Gradle dependencies and compiles DestinationSol. Run once
+    after a fresh clone.
 #>
 
 Set-StrictMode -Version Latest
@@ -32,26 +33,32 @@ function Get-JavaMajorVersion {
 $javaCmd = Get-Command java -ErrorAction SilentlyContinue
 if (-not $javaCmd) {
     Write-Host "Java not found on PATH." -ForegroundColor Yellow
-    Write-Host "Attempting to install Java 17 via winget..."
+    Write-Host "Attempting to install Java 25 via winget..."
     try {
-        winget install EclipseAdoptium.Temurin.17.JDK --silent --accept-package-agreements --accept-source-agreements
+        winget install EclipseAdoptium.Temurin.25.JDK --silent --accept-package-agreements --accept-source-agreements
         Write-Host ""
         Write-Host "Java installed. Please open a new terminal and run setup.ps1 again." -ForegroundColor Green
     } catch {
         Write-Host ""
         Write-Host "Automatic install failed: $_" -ForegroundColor Red
-        Write-Host "Please install Java 17 manually from https://adoptium.net/ then re-run."
+        Write-Host "Please install Java 25 manually from https://adoptium.net/ then re-run."
     }
     exit 0
 }
 
 $major = Get-JavaMajorVersion
-if ($major -lt 11) {
-    Write-Host "Java $major detected but Java 11 or newer is required." -ForegroundColor Red
-    Write-Host "Please install Java 17 from https://adoptium.net/ and re-run."
+if ($major -lt 17) {
+    Write-Host "Java $major detected but Java 17 or newer is required (Gradle 9 will not run on anything older)." -ForegroundColor Red
+    Write-Host "Please install Java 25 from https://adoptium.net/ and re-run."
     exit 1
 }
-Write-Host "Java $major detected. OK." -ForegroundColor Green
+if ($major -lt 25) {
+    Write-Host "Java $major detected. This is enough to run Gradle, but the project" -ForegroundColor Yellow
+    Write-Host "compiles with a Java 25 toolchain - Gradle will download one automatically" -ForegroundColor Yellow
+    Write-Host "the first time (needs an internet connection)." -ForegroundColor Yellow
+} else {
+    Write-Host "Java $major detected. OK." -ForegroundColor Green
+}
 Write-Host ""
 
 Write-Host "Downloading dependencies and compiling (first run may take several minutes)..."
