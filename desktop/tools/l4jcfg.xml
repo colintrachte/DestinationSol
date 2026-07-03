@@ -14,7 +14,7 @@
   <icon>D:\j\sol\desktop\tools\sol.ico</icon>
   <jre>
     <path>lwjre</path>
-    <bundledJre64Bit>false</bundledJre64Bit>
+    <bundledJre64Bit>true</bundledJre64Bit>
     <minVersion></minVersion>
     <maxVersion></maxVersion>
     <jdkPreference>preferJre</jdkPreference>
