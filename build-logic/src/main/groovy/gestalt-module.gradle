@@ -20,10 +20,10 @@ gestalt {
 // Change the output dir of each module
 sourceSets {
     main {
-        java.destinationDirectory.set(new File("$buildDir/classes"))
+        java.destinationDirectory.set(layout.buildDirectory.dir("classes"))
     }
     test {
-        java.destinationDirectory.set(new File("$buildDir/testClasses"))
+        java.destinationDirectory.set(layout.buildDirectory.dir("testClasses"))
     }
 }
 
