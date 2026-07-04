@@ -46,7 +46,6 @@ import java.util.ArrayList;
  * <p>
  * The way that {@link CollisionMeshLoader} is designed, it needs to be given a JSON fileName that points to a specific
  * type of mesh, such as asteroid meshes, which doesn't lend itself to modular body creation.
- * TODO Once CollisionMeshLoader has been refactored to be modular, this should be replaced by a generic body creation system.
  * <p>
  * Bodies should only be created during an update sent by an {@link UpdateAwareSystem}. Attempting to create a body at
  * any other time may cause the game to crash.
@@ -114,7 +113,6 @@ public class AsteroidBodyCreationSystem implements EventReceiver {
      * The originInformation is the information that was read from the JSON, which is used to calculate the graphics
      * offset information.
      */
-    //TODO separate this method into a separate system once CollisionMeshLoader is modular
     private void calculateGraphicsOffset(RenderableElement element) {
         Vector2 originInformation = collisionMeshLoader.getOrigin(element.texture.name, 1);
         element.graphicsOffset = new Vector2(originInformation.x - .5f, originInformation.y - .5f);

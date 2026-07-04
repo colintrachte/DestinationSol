@@ -98,10 +98,6 @@ public class NUIManager {
      */
     private UISkin skin;
     /**
-     * The current game context used to initialise UI screens.
-     */
-    private Context context;
-    /**
      * The baseline UI scale used on Android.
      */
     private final float baseUIScale;
@@ -142,11 +138,9 @@ public class NUIManager {
                       UiDrawer uiDrawer,
                       FocusManager focusManager) {
         NUIInputProcessor.CONSUME_INPUT = false;
-        this.context = context;
         this.uiDrawer = uiDrawer;
         this.focusManager = focusManager;
 
-        // TODO: Re-enable tabbing when it works
         TabbingManager.tabForwardInput = Keyboard.Key.NONE;
         TabbingManager.tabBackInputModifier = Keyboard.Key.NONE;
         TabbingManager.activateInput = Keyboard.Key.NONE;
@@ -425,14 +419,6 @@ public class NUIManager {
      */
     public UISkin getDefaultSkin() {
         return skin;
-    }
-
-    /**
-     * Sets the game context to be used by all UI screens. Newly-added screens will the use this context.
-     * @param context the new context to use
-     */
-    public void setContext(Context context) {
-        this.context = context;
     }
 
     /**

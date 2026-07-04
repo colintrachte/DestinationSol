@@ -129,7 +129,6 @@ public class RubbleTest implements AssetsHelperInitializer, Box2DInitializer {
 
     @Test
     public void onRemove() {
-        // TODO onRemove() should free its resources. How to test that?
         // I guess this just should not crash
         new Rubble(BodyUtilities.createDummyBody(), drawables).onRemove(game);
     }
@@ -149,7 +148,6 @@ public class RubbleTest implements AssetsHelperInitializer, Box2DInitializer {
     @Disabled
     @Test
     public void receiveForce() {
-        // TODO I don't quite know what does this even do, so better leave this for sb else
         fail("Implement this test!");
     }
 

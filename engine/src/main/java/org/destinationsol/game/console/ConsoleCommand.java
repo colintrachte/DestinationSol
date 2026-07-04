@@ -93,7 +93,7 @@ public interface ConsoleCommand extends Comparable<ConsoleCommand> {
      * Executes the command
      *
      * @param parameters Parameters in an Object[] array as defined in {@link AbstractCommand#getCommandParameters()}.
-     * @return A reply to the sender. TODO
+     * @return A reply to the sender.
      */
     String execute(List<String> parameters) throws CommandExecutionException;
 
@@ -103,7 +103,6 @@ public interface ConsoleCommand extends Comparable<ConsoleCommand> {
      * @param parameters Currently provided parameters in an Object[] array.
      * @return A set of suggestions. Never null.
      */
-    //TODO maybe return an array of serializable objects?
     Set<String> suggest(String currentValue, List<String> parameters) throws CommandSuggestionException;
 
     /**

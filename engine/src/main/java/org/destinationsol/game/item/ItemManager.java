@@ -42,14 +42,10 @@ public class ItemManager {
     private final SolItemTypes myTypes;
     private final RepairItem myRepairExample;
     private final OggSoundManager soundManager;
-    private final EffectTypes effectTypes;
-    private final GameColors gameColors;
 
     @Inject
     public ItemManager(OggSoundManager soundManager, EffectTypes effectTypes, GameColors gameColors) {
         this.soundManager = soundManager;
-        this.effectTypes = effectTypes;
-        this.gameColors = gameColors;
 
         moneyIcon = Assets.getAtlasRegion("engine:iconMoney");
         medMoneyIcon = Assets.getAtlasRegion("engine:iconMedMoney");
@@ -145,7 +141,6 @@ public class ItemManager {
                 SolItem example = getExample(itemName);
 
                 if (example == null) {
-                    // TODO: Temporary hacky way!
                     try {
                         if (itemName.endsWith("Charge")) {
                             AbilityCharge.Config.load(itemName, this, myTypes);

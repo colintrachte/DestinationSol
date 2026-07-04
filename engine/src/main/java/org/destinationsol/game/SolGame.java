@@ -209,7 +209,7 @@ public class SolGame {
                     continue;
                 }
                 RegisterUpdateSystem registerAnnotation = updateSystemClass.getDeclaredAnnotation(RegisterUpdateSystem.class);
-                UpdateAwareSystem system = (UpdateAwareSystem) updateSystemClass.newInstance();
+                UpdateAwareSystem system = (UpdateAwareSystem) updateSystemClass.getDeclaredConstructor().newInstance();
                 try {
                     beanContext.inject(system);
                 } catch (BeanNotFoundException e) {
@@ -250,7 +250,7 @@ public class SolGame {
         //World Generation will be initiated from here
         galaxyBuilder.buildWithRandomSolarSystemGenerators();
 
-        //Add all the Planets in the game to the PlanetManager TODO: Add mazes, belts, etc. once the are implemented
+        //Add all the Planets in the game to the PlanetManager
         addObjectsToPlanetManager();
         logger.debug("Galaxy built: {} solar systems, {} planets", planetManager.getSystems().size(), planetManager.getPlanets().size());
 
@@ -355,7 +355,6 @@ public class SolGame {
             tutorialManager.ifPresent(TutorialManager::onGameEnd);
         }
 
-        // TODO: Remove this when context is reset after each game
         context.get(EntitySystemManager.class).getEntityManager().allEntities().forEach(EntityRef::delete);
 
         try {

@@ -22,14 +22,6 @@ public class TestModuleConfig implements FacadeModuleConfig {
     }
 
     @Override
-    public boolean useSecurityManager() {
-        // The JVM Security Manager was permanently removed in JDK 25 (JEP 486 fully
-        // disallows it, with no opt-back-in flag), so module sandboxing via
-        // ModuleSecurityManager/ModuleSecurityPolicy can no longer function.
-        return false;
-    }
-
-    @Override
     public ModuleEnvironment.ClassLoaderSupplier getClassLoaderSupplier() {
         return JavaModuleClassLoader::create;
     }

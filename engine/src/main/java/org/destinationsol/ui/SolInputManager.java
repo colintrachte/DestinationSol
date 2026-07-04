@@ -63,7 +63,6 @@ public class SolInputManager {
     private final PlayableSound hoverSound;
     private final TextureAtlas.AtlasRegion uiCursor;
     private final Color warnColor;
-    private final Context context;
     private float mouseIdleTime;
     //HACK: Mouse locking is currently broken on Linux
     private final boolean osIsLinux;
@@ -72,13 +71,10 @@ public class SolInputManager {
     private float warnPercentage;
     private boolean warnPercGrows;
     private Boolean scrolledUp;
-    private OggSoundManager soundManager;
     public boolean touchDragged;
 
     @Inject
     public SolInputManager(OggSoundManager soundManager, Context context) {
-        this.context = context;
-        this.soundManager =soundManager;
         inputPointers = new InputPointer[POINTER_COUNT];
         for (int i = 0; i < POINTER_COUNT; i++) {
             inputPointers[i] = new InputPointer();
@@ -323,7 +319,6 @@ public class SolInputManager {
 
         int mouseX = Gdx.input.getX();
         int mouseY = Gdx.input.getY();
-        // TODO: look into the usefulness of this, and replace with Gdx.graphics.* with displayDimensions if nothing else
         int screenWidth = Gdx.graphics.getWidth();
         int screenHeight = Gdx.graphics.getHeight();
         if (mouseX < 0 || mouseX >= screenWidth || mouseY < 0 || mouseY >= screenHeight) {

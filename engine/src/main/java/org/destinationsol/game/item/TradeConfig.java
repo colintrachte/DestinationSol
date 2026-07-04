@@ -36,7 +36,7 @@ public class TradeConfig {
 
         String itemStr = tradeNode.getString("items");
         List<ItemConfig> itemList = itemManager.parseItems(itemStr);
-        Collections.reverse(itemList); // TODO: Examine why this is required.
+        Collections.reverse(itemList);
         items.addAll(itemList);
 
         String shipStr = tradeNode.optString("ships", "");

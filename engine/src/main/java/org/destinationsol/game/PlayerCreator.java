@@ -39,8 +39,6 @@ class PlayerCreator {
     private static final int SHIP_SPAWN_ANGLE = 0;
     private static final int SHIP_SPAWN_ROTATION_SPEED = 0;
     private static final boolean SHIP_SPAWN_HAS_REPAIRER = true;
-    private static final int NUMBER_OF_TUTORIAL_ITEM_ADD_ATTEMPTS = 50;
-    private static final float MAX_NUMBER_OF_TUTORIAL_ITEM_GROUPS = 1.5f * Const.ITEM_GROUPS_PER_PAGE;
 
     Hero createPlayer(ShipConfig shipConfig, boolean shouldSpawnOnGalaxySpawnPosition, RespawnState respawnState, SolGame game, boolean isMouseControl, boolean isNewShip) {
         Vector2 position = findPlayerSpawnPosition(shipConfig, shouldSpawnOnGalaxySpawnPosition, game);
@@ -99,10 +97,6 @@ class PlayerCreator {
             hero.addWaypoint(waypoint);
             game.getObjectManager().addObjDelayed(waypoint);
         }
-    }
-
-    private boolean isNoGunAndHasIcon(SolItem it, SolGame game) {
-        return !(it instanceof Gun) && it.getIcon(game) != null;
     }
 
     private void addAndEquipRespawnItems(Hero hero, RespawnState respawnState, ItemContainer itemContainer, SolGame game) {

@@ -150,7 +150,6 @@ public class GalaxyFiller {
         ShipConfig mainStationCfg = ShipConfig.load(hullConfigManager, rootNode, itemManager);
 
         ConsumedAngles angles = new ConsumedAngles();
-        // TODO: Select an appropriate enemy faction based on the player faction.
         FarShip mainStation = build(game, mainStationCfg, game.getFactionMan().getBuilderForHull(mainStationCfg.hull), true, systems.get(0), angles);
         mainStationPos.set(mainStation.getPosition());
         mainStationHc = mainStation.getHullConfig();
@@ -161,7 +160,6 @@ public class GalaxyFiller {
             for (ShipConfig shipConfig : solarSystemConfig.constAllies) {
                 int count = (int) (shipConfig.density);
                 for (int i = 0; i < count; i++) {
-                    // TODO: Select an appropriate ally faction based on the player faction.
                     build(game, shipConfig, game.getFactionMan().getGenericAllyFaction(), false, system, angles);
                 }
             }
@@ -169,7 +167,6 @@ public class GalaxyFiller {
             for (ShipConfig shipConfig : solarSystemConfig.constEnemies) {
                 int count = (int) (shipConfig.density);
                 for (int i = 0; i < count; i++) {
-                    // TODO: Select an appropriate enemy faction based on the player faction.
                     build(game, shipConfig, game.getFactionMan().getGenericEnemyFaction(), false, system, angles);
                 }
             }

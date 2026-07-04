@@ -83,7 +83,6 @@ public class TutorialScreen extends NUIScreenLayer {
 
     @Override
     public void initialise() {
-        // TODO: The right tutorial box doesn't exist yet. It will return null values.
         for (HorizontalAlign horizontalAlign : HorizontalAlign.values()) {
             TutorialBox tutorialBox = new TutorialBox(
                     find("tutorialBox" + horizontalAlign.toString(), UIBox.class),

@@ -23,7 +23,6 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import org.destinationsol.GameOptions;
 import org.destinationsol.modules.FacadeModuleConfig;
-import org.destinationsol.modules.ModuleManager;
 import org.destinationsol.SolApplication;
 import org.destinationsol.SolFileReader;
 import org.destinationsol.game.DebugOptions;
@@ -108,7 +107,6 @@ public final class SolDesktop {
         }
 
         Lwjgl3ApplicationConfiguration applicationConfig = new Lwjgl3ApplicationConfiguration();
-        //TODO: Is checking for a presence of the file really the way we want to determine if it is a debug build?
         handleDevBuild(applicationConfig);
         MyReader reader = new MyReader();
         DebugOptions.read(reader);
@@ -234,14 +232,6 @@ public final class SolDesktop {
         }
 
         @Override
-        public boolean useSecurityManager() {
-            // The JVM Security Manager was permanently removed in JDK 25 (JEP 486 fully
-            // disallows it, with no opt-back-in flag), so module sandboxing via
-            // ModuleSecurityManager/ModuleSecurityPolicy can no longer function.
-            return false;
-        }
-
-        @Override
         public ModuleEnvironment.ClassLoaderSupplier getClassLoaderSupplier() {
             return JavaModuleClassLoader::create;
         }
@@ -260,7 +250,6 @@ public final class SolDesktop {
     /**
      * Provides the implementation of SolFileReader used by this class.
      */
-    //TODO Since this is currently the only implementation of SolFileReader, consider making this into a self-standing class with static methods. Also, consider uniting SolFileReader and IniReader.
     private static class MyReader implements SolFileReader {
         @Override
         public String create(String fileName, List<String> lines) {

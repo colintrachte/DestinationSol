@@ -7,7 +7,6 @@ plugins {
     id 'destination-sol-ide'
 }
 
-// TODO: Temporary until javadoc has been fixed for Java 8 everywhere
 javadoc {
     failOnError = false
 }

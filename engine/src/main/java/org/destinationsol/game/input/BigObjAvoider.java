@@ -25,7 +25,7 @@ import org.destinationsol.world.generators.SolarSystemGenerator;
 public class BigObjAvoider {
 
     private static final float MAX_DIST_LEN = 2 * (Const.MAX_GROUND_HEIGHT + Const.ATM_HEIGHT);
-    private Vector2 myProj; // TODO replace name with something logical, if you can find out what
+    private Vector2 myProj;
 
     BigObjAvoider() {
         myProj = new Vector2();

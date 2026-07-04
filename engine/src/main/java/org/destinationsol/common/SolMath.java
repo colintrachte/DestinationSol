@@ -277,7 +277,7 @@ public class SolMath {
      * @param v     Vector to rotate
      */
     public static void rotate(Vector2 v, float angle) {
-        v.rotate(angle);
+        v.rotateDeg(angle);
     }
 
     /**
@@ -494,7 +494,6 @@ public class SolMath {
         return res < 0 ? Float.NaN : res;
     }
 
-    //TODO The three following functions aren't as much of mathematical functions as they are input processing functions. Move them somewhere else?
     public static Vector2 readV2(JSONObject v, String name) {
         return readV2(v.getString(name));
     }

@@ -15,9 +15,7 @@
  */
 package org.destinationsol.testingUtilities;
 
-import org.destinationsol.entitysystem.EntitySystemManager;
 import org.destinationsol.modules.FacadeModuleConfig;
-import org.destinationsol.modules.ModuleManager;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.headless.HeadlessApplication;
 import com.badlogic.gdx.backends.headless.HeadlessApplicationConfiguration;
@@ -27,14 +25,9 @@ import org.destinationsol.game.DebugOptions;
 import org.destinationsol.game.SolGame;
 import org.destinationsol.testsupport.TestModuleConfig;
 import org.terasology.context.Lifetime;
-import org.terasology.gestalt.di.DefaultBeanContext;
 import org.terasology.gestalt.di.ServiceRegistry;
-import org.terasology.gestalt.entitysystem.component.management.ComponentManager;
-import org.terasology.gestalt.module.ModuleFactory;
 import org.terasology.gestalt.module.ModulePathScanner;
-import org.terasology.gestalt.module.TableModuleRegistry;
 
-import java.util.Collections;
 
 public final class InitializationUtilities {
 

@@ -24,7 +24,6 @@ import org.destinationsol.game.item.SolItem;
 import org.destinationsol.game.ship.SolShip;
 import org.destinationsol.ui.nui.screens.InventoryScreen;
 import org.destinationsol.ui.nui.screens.TalkScreen;
-import org.destinationsol.ui.nui.widgets.KeyActivatedButton;
 import org.destinationsol.ui.nui.widgets.UIWarnButton;
 import org.terasology.nui.backends.libgdx.GDXInputUtil;
 import org.terasology.nui.widgets.UIButton;

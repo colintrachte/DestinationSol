@@ -21,8 +21,6 @@ package org.destinationsol.entitysystem;
  */
 public class ComponentSystem {
 
-    //TODO: Use this stuff
-
     /**
      * Called to initialise the system. This occurs after injection, but before other systems are necessarily initialised, so they should not be interacted with.
      */

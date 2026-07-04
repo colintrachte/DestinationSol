@@ -89,7 +89,6 @@ public class PartMan {
 
     public RectSprite blip(SolGame game, Vector2 position, float angle, float size, float fadeTime, Vector2 velocity, TextureAtlas.AtlasRegion texture) {
         // NOTE: The use of animated sprites here caused infrequent game crashes and so has been disabled.
-        // TODO: Should animated icons be possible?
         RectSprite sprite = SpriteManager.createStaticSprite(texture, size, 0, 0, new Vector2(), DrawableLevel.PART_FG_0, angle, 0, SolColor.WHITE, true);
         ArrayList<Drawable> drawables = new ArrayList<>();
         drawables.add(sprite);

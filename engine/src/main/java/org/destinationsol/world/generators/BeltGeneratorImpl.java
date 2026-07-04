@@ -15,12 +15,7 @@
  */
 package org.destinationsol.world.generators;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class BeltGeneratorImpl extends BeltGenerator {
-    private static final Logger logger = LoggerFactory.getLogger(BeltGeneratorImpl.class);
-
     @Override
     public void build() {
         setRadius(DEFAULT_BELT_HALF_WIDTH);

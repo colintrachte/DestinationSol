@@ -76,3 +76,130 @@ DISPOSE
     ParticleEffect
     World
     Sound
+
+===================== CODE TODOs (migrated from source comments, 2026-07-03) =====================
+
+ECS / legacy SolObject & Projectile migration
+  [engine/src/main/java/org/destinationsol/game/projectile/Projectile.java] Two TODOs: once SolShip is converted to an entity, the emTime/disableControls branch (currently commented out) should be refactored to work with it; and the "else" branch handling contact between a SolObject and an entity is legacy code that can be removed once every SolObject has been converted to an entity.
+    touches: SolShip.java, SolObject.java, SolContactListener.java
+  [engine/src/main/java/org/destinationsol/game/projectile/PointProjectileBody.java] The EntityRef userData handling in reportRayFixture() is a patch to smooth over contact between an Entity and a Projectile; remove once Projectile itself becomes an Entity.
+    touches: Projectile.java, SolContactListener.java, SolObjectEntityWrapper.java
+  [engine/src/main/java/org/destinationsol/game/SolContactFilter.java] Everything after the noted line will need to be replaced once Projectile is refactored to work with ECS (currently casts fixture userData to SolObject).
+    touches: Projectile.java, SolContactListener.java, SolObject.java
+  [engine/src/main/java/org/destinationsol/game/SolContactListener.java] Five TODOs, all part of the same theme: wrapping EntityRef userData in a SolObjectEntityWrapper is a patch to bridge Entity <-> SolObject contact handling, and the SolObject-only contact-handling branches are legacy, to be removed once Projectile/SolObject are fully migrated to entities.
+    touches: SolObjectEntityWrapper.java, Projectile.java, SolObject.java, PointProjectileBody.java
+  [engine/src/main/java/org/destinationsol/game/SolObjectEntityWrapper.java] Class-level doc TODO noting the whole class is a temporary patch bridging SolObject (OO) and EntityRef (ECS) during the migration; delete once everything is converted to entities.
+    touches: SolContactListener.java, PointProjectileBody.java, Projectile.java, game/input/SmallObjAvoider.java
+  [engine/src/main/java/org/destinationsol/game/SolObject.java] Two TODOs on the interface: toDebugString() debug collection/display needs improving/reworking (see GitHub PR #269 discussion); isMetal() collision-sound handling should allow more complex sounds or a reworked material system entirely.
+  [engine/src/main/java/org/destinationsol/entitysystem/ComponentSystem.java] Vague "Use this stuff" TODO above the class body; unclear what specifically is unused - needs investigation of the class to see what facility it refers to.
+  [engine/src/main/java/org/destinationsol/game/SolGame.java] "Remove this when context is reset after each game" - the manual `allEntities().forEach(EntityRef::delete)` cleanup call is a workaround for context/entity-manager state not being reset automatically between games.
+    touches: EntitySystemManager.java
+  [engine/src/main/java/org/destinationsol/SolApplication.java] Two "remove this line/block - it is for debugging purposes" TODOs guarding a manual ECS test-asteroid spawn (DebugOptions.SPAWN_ECS_ASTEROID) and the entityCreated debug flag; also a TODO to rework how ComponentSystems trigger preBegin.
+    touches: DebugOptions.java, ComponentSystem.java
+  [engine/src/main/java/org/destinationsol/rendering/RenderableElement.java] The graphics-offset resize logic should be automatically invoked when the entity's Size component changes (e.g. shrink/grow), rather than requiring a manual call.
+    touches: asteroids/systems/AsteroidBodyCreationSystem.java, rubble/systems/RubbleBodyCreationSystem.java
+  [engine/src/main/java/org/destinationsol/asteroids/systems/AsteroidBodyCreationSystem.java] Two TODOs: the whole class exists only because CollisionMeshLoader isn't modular yet and should be replaced by a generic body-creation system once it is; calculateGraphicsOffset() should become its own system for the same reason.
+    touches: rubble/systems/RubbleBodyCreationSystem.java, RenderableElement.java, CollisionMeshLoader
+  [engine/src/main/java/org/destinationsol/rubble/systems/RubbleBodyCreationSystem.java] Same "separate this method into a separate system once CollisionMeshLoader is modular" TODO as AsteroidBodyCreationSystem (calculateGraphicsOffset()).
+    touches: asteroids/systems/AsteroidBodyCreationSystem.java, RenderableElement.java
+
+Dependency injection / gestalt migration
+  [engine/src/main/java/org/destinationsol/util/InjectionHelper.java] Class-level and inline TODOs: the whole hand-rolled @In field-injection mechanism should be replaced with gestalt-di's implementation.
+    touches: common/In.java, CoreService.java, game/console/MethodCommand.java
+  [engine/src/main/java/org/destinationsol/game/console/MethodCommand.java] registerAvailable()'s manual reflection-based command-method scanning should be replaced with gestalt-di's implementation (same theme as InjectionHelper).
+    touches: util/InjectionHelper.java
+  [engine/src/main/java/org/destinationsol/CoreService.java] "Seems this is should be GameService before game" - the Console/ConsoleImpl singleton registration may be registered at the wrong service-lifecycle stage.
+    touches: game/console/ConsoleImpl.java
+  [engine/src/main/java/org/destinationsol/modules/ModuleManager.java] "REMOVE THIS" on the static getEnvironmentStatic() accessor - a static escape hatch that should go away, presumably once callers can get the ModuleEnvironment via proper injection/context.
+
+NUI / legacy UI migration
+  [engine/src/main/java/org/destinationsol/assets/AssetHelper.java] Two "inject this" TODOs where UISkinAsset and UIElement asset types are created directly instead of via DI.
+    touches: ui/nui/NUIManager.java, assets/ui/UIFormat.java, assets/ui/UISkinFormat.java
+  [engine/src/main/java/org/destinationsol/SolApplication.java] "Remove the following line when all screens have been ported to use NUI" - finishGame() calls the legacy inputManager.setScreen(this, null) to clear old-style UI screens.
+    touches: ui/SolInputManager.java, ui/SolUiScreen.java, ui/nui/NUIManager.java, ui/nui/screens package
+  [engine/src/main/java/org/destinationsol/ui/nui/NUIManager.java] "Re-enable tabbing when it works" - TabbingManager keybindings are all forced to Keyboard.Key.NONE, disabling NUI widget tab-navigation.
+  [engine/src/main/java/org/destinationsol/ui/nui/screens/MainGameScreen.java] Three TODOs: how to handle free-camera movement on Android (never supported); and two TODOs on CollisionWarnDrawerRayCastCallback noting the code dates from when "hero" was a SolShip and its current purpose/correctness is unclear.
+    touches: game/screens/CollisionWarnDrawer.java, game/ship/SolShip.java
+  [engine/src/main/java/org/destinationsol/ui/nui/screens/TutorialScreen.java] "The right tutorial box doesn't exist yet. It will return null values." in initialise(), iterating HorizontalAlign values to find tutorial boxes.
+    touches: game/tutorial package
+  [engine/src/main/java/org/destinationsol/ui/nui/screens/WaypointCreationScreen.java] Class doc TODO suggesting this screen (essentially a colour picker) could be generalized into a reusable widget instead of a one-off screen.
+  [engine/src/main/java/org/destinationsol/ui/SolInputManager.java] "Look into the usefulness of this, and replace with Gdx.graphics.* with displayDimensions if nothing else" regarding manual mouse-position/screen-bounds checks.
+    touches: SolApplication.java (displayDimensions)
+  [engine/src/main/java/org/destinationsol/ui/SolUiControl.java] "Remove this condition once the entire codebase uses the new ui system" guarding a null referencePosition check in computePosition().
+    touches: ui/nui package, ui/SolUiScreen.java
+  [engine/src/main/java/org/destinationsol/ui/SolUiScreen.java] Three TODOs on the legacy screen interface: onAdd() maybe should be renamed onFocus(); the "is screen covering another" method's algorithm is unclear and should be redesigned; blurCustom() maybe should be renamed onClose()/onUnfocus().
+    touches: ui/nui/screens package (NUI equivalents)
+  [engine/src/main/java/org/destinationsol/ui/UiDrawer.java] "WTF is `isTextMode` for? discuss and potentially (=probably) remove" on a private field.
+  [engine/src/main/java/org/destinationsol/game/tutorial/steps/MessageStep.java] "NUI doesn't support controller input at the moment, so we detect completion here" - a workaround in checkComplete() for controller-based tutorial step completion.
+    touches: ui/nui package, game/tutorial package
+  [engine/src/main/java/org/destinationsol/game/screens/CollisionWarnDrawer.java] "Code from era when hero was SolShip - does this still work? (what is it supposed to do?)" on the CollisionRayCastCallback inner class; near-duplicate of the TODO in ui/nui/screens/MainGameScreen.java's copy of the same callback.
+    touches: ui/nui/screens/MainGameScreen.java, game/ship/SolShip.java
+
+World / galaxy / planet generation
+  [engine/src/main/java/org/destinationsol/game/chunk/ChunkFiller.java] "Uncomment this section when there are mazes added to the SolarSystem" guarding a commented-out maze-distance block.
+    touches: game/SolGame.java, world/GalaxyBuilder.java, planet/SolarSystemConfig
+  [engine/src/main/java/org/destinationsol/game/GalaxyFiller.java] Three TODOs (main station, constant allies, constant enemies) all noting that ship faction assignment should select an appropriate ally/enemy faction based on the player's faction, rather than always using the generic ally/enemy faction.
+    touches: game/FactionManager.java
+  [engine/src/main/java/org/destinationsol/game/planet/BeltConfigManager.java] Two TODOs: determine why the "engine" module is excluded when listing belt config JSON assets; and consider adding sanity checks when loading a belt config.
+    touches: game/planet/SolarSystemConfigManager.java (same "engine module excluded" TODO), game/planet/SysConfigs.java (same sanity-check TODO)
+  [engine/src/main/java/org/destinationsol/game/planet/SolarSystemConfigManager.java] Same "determine why 'engine' module is excluded" TODO as BeltConfigManager, for solar system config JSON assets.
+    touches: game/planet/BeltConfigManager.java
+  [engine/src/main/java/org/destinationsol/game/planet/SysConfigs.java] Same "maybe add sanity checks for config?" TODO as BeltConfigManager, for system enemy configs.
+    touches: game/planet/BeltConfigManager.java
+  [engine/src/main/java/org/destinationsol/game/planet/GroundBuilder.java] "Someone inspect this - what is this? - maybe finish this" on createDungeon() - looks like an unfinished/abandoned feature.
+  [engine/src/main/java/org/destinationsol/game/planet/OrbitalEnemiesBuilder.java] "Change atmosphere percentage to something more understandable, like height" on the atmospherePercentage field.
+  [engine/src/main/java/org/destinationsol/game/planet/PlanetObjectsBuilder.java] "Determine why distanceToPlanet is occasionally equal to {NaN, NaN}" - a defensive NaN check whose root cause is unknown.
+  [engine/src/main/java/org/destinationsol/world/GalaxyBuilder.java] "Implement logic to allow system to be positioned within a particular annulus" on calculateSolarSystemPosition()'s doc comment - currently systems are placed by outward radial search without annulus constraints.
+    touches: game/chunk/ChunkFiller.java, planet/SolarSystemConfigManager.java
+  [engine/src/test/java/org/destinationsol/world/GalaxyBuilderTest.java] "This method is duplicated in most of the world generation tests. Maybe move it into an initialiser interface?" on setupConfigManagers().
+    touches: other world-generation test classes (likely GalaxyFillerTest, ChunkFillerTest, etc.)
+  [engine/src/main/java/org/destinationsol/game/SolGame.java] Inline TODO: "Add mazes, belts, etc. once they are implemented" next to addObjectsToPlanetManager(), consistent with the ChunkFiller maze TODO.
+    touches: game/chunk/ChunkFiller.java, world/GalaxyBuilder.java
+
+Ships, items & factions
+  [engine/src/main/java/org/destinationsol/game/FactionManager.java] "Add support for custom event handlers" on reportEvent(), with examples in the comment (pacifist factions, merchant discounts) of reputation-event behaviors not yet supported.
+    touches: game/GalaxyFiller.java (faction selection TODOs)
+  [engine/src/main/java/org/destinationsol/game/ShipConfig.java] "Consider refactoring 'density' to some other name, as it more accurately reflects a probability of ship spawning" on the density field.
+    touches: game/GalaxyFiller.java, game/planet/SysConfigs.java, game/planet/BeltConfigManager.java (all consumers of ShipConfig.density)
+  [engine/src/main/java/org/destinationsol/game/ship/ShipBuilder.java] "This logic belongs in the HullConfigManager/HullConfig" on buildHull()'s use of hullConfig.getInternalName() and schema validation.
+    touches: files/HullConfigManager.java, game/HullConfig.java
+  [engine/src/main/java/org/destinationsol/game/ship/SolShip.java] "This statement previously caused a crash as getApproxRadius returned 0 - where is it meant to be set / loaded from?" on the onDeath position/velocity randomisation logic.
+    touches: files/HullConfigManager.java (HullConfig.getApproxRadius / process())
+  [engine/src/main/java/org/destinationsol/files/HullConfigManager.java] "Find out what this function does and provide a better name" on process(), which offsets positions by the shipbuilder origin.
+    touches: game/ship/ShipBuilder.java, game/ship/SolShip.java (getApproxRadius TODO above)
+  [engine/src/main/java/org/destinationsol/game/item/ItemManager.java] "Temporary hacky way!" guarding a try/catch fallback used when no example item exists for an item name (e.g. AbilityCharge parsing).
+  [engine/src/main/java/org/destinationsol/game/item/LootBuilder.java] "Should animated icons be possible?" - animated sprite icons were disabled after causing infrequent crashes; static sprites used instead.
+    touches: game/particle/PartMan.java (identical TODO/NOTE), rendering/SpriteManager.java
+  [engine/src/main/java/org/destinationsol/game/particle/PartMan.java] Same "Should animated icons be possible?" TODO/NOTE as LootBuilder, for particle blip sprites.
+    touches: game/item/LootBuilder.java
+  [engine/src/main/java/org/destinationsol/game/item/TradeConfig.java] "Examine why this is required" on a Collections.reverse(itemList) call after parsing trade items - reason for the reversal is undocumented.
+  [engine/src/main/java/org/destinationsol/game/input/BigObjAvoider.java] "Replace name with something logical, if you can find out what" on the myProj field.
+
+Console & commands
+  [engine/src/main/java/org/destinationsol/game/console/ConsoleCommand.java] Two TODOs: a stray "TODO" at the end of the execute() javadoc @return line with no further detail; and "maybe return an array of serializable objects?" on suggest()'s return type.
+  [engine/src/main/java/org/destinationsol/game/console/CyclingTabCompletionEngine.java] "Find out a better way to handle too many results while returning useful information" trailing a commented-out block that used to warn the console when there were too many tab-completion matches.
+
+Assets & rendering
+  [engine/src/main/java/org/destinationsol/assets/Assets.java] "Remove this sanitisation when no gestalt resource urns contain slashes" in getAtlasRegion(), which strips path segments from resource URNs.
+  [engine/src/main/java/org/destinationsol/assets/fonts/ScaledFontProducer.java] "Provide AssetManager" - the constructor stores an AssetHelper where an AssetManager may eventually be more appropriate.
+    touches: assets/AssetHelper.java
+  [engine/src/main/java/org/destinationsol/assets/music/OggMusicManager.java] "Make music registerable from modules, and then register this music through the new way" on the engine-music registration javadoc.
+    touches: modules/ModuleManager.java
+  [engine/src/main/java/org/destinationsol/assets/sound/OggSoundManager.java] "Now handles even adding the sound to the list of looping sounds. Possibly extract that?" - a method doing more than its name/doc implies and may deserve splitting.
+  [engine/src/main/java/org/destinationsol/game/MapDrawer.java] "Don't pass null hero to drawObjIcon(). Then remove the annotation from drawObjIcon and remove the hero nullcheck" on drawStarPortIcon().
+  [engine/src/main/java/org/destinationsol/common/SolMath.java] "The three following functions aren't as much of mathematical functions as they are input processing functions. Move them somewhere else?" above readV2() and its neighbors.
+
+Build & tooling
+  [build-logic/src/main/groovy/destination-sol-common.gradle] "Temporary until javadoc has been fixed for Java 8 everywhere" above `javadoc { failOnError = false }`. Note: repo has since moved to a modern JDK (see recent "Modernized the entire game and its dependencies" commit) so this may be stale/resolvable now.
+  [engine/build.gradle] "Inserted by someone who has no idea how the gradle thing works. Inspect whether necessary (for tests). Copied from desktop build.gradle. May break things with android (maybe)" above the gdx-backend-headless/gdx-platform/gdx-box2d-platform/gdx-controllers-desktop testImplementation block.
+    touches: desktop/build.gradle (source of the copy)
+  [desktop/build.gradle] "Remove extra args when the splash screen works on Macs again" above the macOS-specific `-splash`/`-XstartOnFirstThread` jvmArgs in the `run` task. See https://github.com/MovingBlocks/DestinationSol/issues/414
+  [desktop/build.gradle] "LibGDX Generated config for Eclipse. Needs adjustment for assets not being in the Android facade" above the `eclipse { project { ... } }` block that links the Android assets folder.
+
+Misc / needs investigation
+  [engine/src/main/java/org/destinationsol/SolApplication.java] Three "Make this non-static." TODOs on displayDimensions, resizeSubscribers, and addResizeSubscriber().
+    touches: ui/SolInputManager.java (consumes displayDimensions), any ResizeSubscriber implementers
+  [engine/src/main/java/org/destinationsol/game/SaveManager.java] "Don't ignore exception" on a caught IOException that is currently silently swallowed during world-file loading.
+  [engine/src/test/java/org/destinationsol/game/RubbleTest.java] Two TODOs: onRemove() "should free its resources. How to test that?"; and receiveForce() "I don't quite know what does this even do, so better leave this for sb else" (test currently just calls fail("Implement this test!")).
+  [desktop/src/main/java/org/destinationsol/desktop/SolDesktop.java] Two TODOs: "Is checking for a presence of the file really the way we want to determine if it is a debug build?" on handleDevBuild(); and a suggestion to make MyReader (the only SolFileReader implementation) a self-standing class with static methods, and to unite SolFileReader and IniReader.
+    touches: files/SolFileReader.java (or equivalent), IniReader

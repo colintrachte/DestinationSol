@@ -36,8 +36,6 @@ import javax.inject.Inject;
 /**
  * This screen is responsible for choosing the colour of a waypoint and then placing it.
  * The position of the waypoint to place is decided in the {@link MapScreen}.
- *
- * TODO: This screen is essentially a basic colour picker. Maybe it should be adapted into a generic widget instead?
  */
 public class WaypointCreationScreen extends NUIScreenLayer {
     private final SolApplication solApplication;

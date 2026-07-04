@@ -3,8 +3,6 @@ package org.destinationsol;
 import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Gdx;
 import org.destinationsol.assets.AssetHelper;
-import org.destinationsol.assets.music.OggMusicManager;
-import org.destinationsol.assets.sound.OggSoundManager;
 import org.destinationsol.game.DebugOptions;
 import org.destinationsol.game.console.Console;
 import org.destinationsol.game.console.ConsoleImpl;
@@ -64,7 +62,6 @@ public class CoreService extends ServiceRegistry {
         this.registerScanner(new StandardScanner("org.destinationsol.assets"));
         this.registerScanner(new StandardScanner("org.destinationsol.ui.nui.screens"));
 
-        // TODO seems this is should be GameService before game
         this.with(Console.class).lifetime(Lifetime.Singleton).use(ConsoleImpl.class);
     }
 

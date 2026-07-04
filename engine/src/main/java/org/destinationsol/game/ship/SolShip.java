@@ -16,7 +16,6 @@
 
 package org.destinationsol.game.ship;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -393,7 +392,6 @@ public class SolShip implements SolObject {
         if (onDeath) {
             velocityAngle = SolRandom.randomFloat(180);
             speed = SolRandom.randomFloat(0, Loot.MAX_SPD);
-            // TODO: This statement previously caused a crash as getApproxRadius returned 0 - where is it meant to be set / loaded from?
             SolMath.fromAl(position, velocityAngle, SolRandom.randomFloat(myHull.config.getApproxRadius()));
         } else {
             velocityAngle = getAngle();

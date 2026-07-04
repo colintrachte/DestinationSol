@@ -19,7 +19,6 @@ import com.badlogic.gdx.math.Vector2;
 import org.destinationsol.common.SolMath;
 import org.destinationsol.common.SolRandom;
 import org.destinationsol.game.WorldConfig;
-import org.destinationsol.game.context.Context;
 import org.destinationsol.game.planet.SolarSystem;
 import org.destinationsol.game.planet.SolarSystemConfigManager;
 import org.destinationsol.modules.ModuleManager;
@@ -28,7 +27,6 @@ import org.destinationsol.world.generators.SolarSystemGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.gestalt.di.BeanContext;
-import org.terasology.gestalt.di.DefaultBeanContext;
 
 import javax.inject.Inject;
 import java.lang.reflect.Modifier;
@@ -156,7 +154,7 @@ public class GalaxyBuilder {
         for (int i = 0; i < worldConfig.getNumberOfSystems(); i++) {
             Class<? extends SolarSystemGenerator> solarSystemGenerator = solarSystemGeneratorTypes.get(SolRandom.seededRandomInt(solarSystemGeneratorTypes.size()));
             try {
-                SolarSystemGenerator generator = solarSystemGenerator.newInstance();
+                SolarSystemGenerator generator = solarSystemGenerator.getDeclaredConstructor().newInstance();
                 beanContext.inject(generator);
                 generator.setFeatureGeneratorTypes(featureGeneratorTypes);
                 generator.setSolarSystemConfigManager(solarSystemConfigManager);
@@ -200,7 +198,6 @@ public class GalaxyBuilder {
      * This method runs a loop which tests 20 random angles at increasing radii starting from the center of the world
      * and working outward until an open spot for the System is found. The tested spot is considered 'open' if placing
      * a SolarSystem there will not cause it to overlap with any others.
-     * TODO Implement logic to allow system to be positioned within a particular annulus
      */
     private void calculateSolarSystemPosition(List<SolarSystemGenerator> systems, SolarSystemGenerator solarSystemGenerator, float bodyRadius) throws RuntimeException {
         Vector2 result = SolMath.getVec();

@@ -28,7 +28,6 @@ import org.destinationsol.game.screens.ShipMouseControl;
 import org.destinationsol.game.screens.ShipUiControl;
 import org.destinationsol.ui.Waypoint;
 import org.destinationsol.ui.nui.NUIScreenLayer;
-import org.destinationsol.ui.nui.widgets.KeyActivatedButton;
 import org.destinationsol.ui.nui.widgets.UIWarnButton;
 import org.joml.Vector2d;
 import org.joml.Vector2i;

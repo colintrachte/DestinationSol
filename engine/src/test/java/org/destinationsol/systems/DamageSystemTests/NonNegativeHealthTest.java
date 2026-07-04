@@ -16,7 +16,6 @@
 package org.destinationsol.systems.DamageSystemTests;
 
 import org.destinationsol.entitysystem.EntitySystemManager;
-import org.destinationsol.game.context.internal.ContextImpl;
 import org.destinationsol.health.components.Health;
 import org.destinationsol.health.events.DamageEvent;
 import org.destinationsol.health.systems.DamageSystem;

@@ -230,7 +230,6 @@ public class SolUiControl {
     }
 
     public void computePosition() {
-        // TODO: Remove this condition once the entire codebase uses the new ui system
         if (referencePosition == null) {
             return;
         }

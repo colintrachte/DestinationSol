@@ -595,7 +595,6 @@ public class MainGameScreen extends NUIScreenLayer {
         }
 
         GameOptions gameOptions = solApplication.getOptions();
-        // TODO: How to handle free camera movement on Android? (note: this has never been supported)
         if (event.getKey() == GDXInputUtil.GDXToNuiKey(gameOptions.getKeyFreeCameraMovement())) {
             SolCam.DIRECT_CAM_CONTROL = event.isDown();
         }
@@ -985,8 +984,6 @@ public class MainGameScreen extends NUIScreenLayer {
     private final class CollisionWarnDrawerRayCastCallback implements RayCastCallback {
         private boolean show;
 
-        //TODO code from era when hero was SolShip - does this still work? (what is it supposed to do?)
-        // TODO: Moved from the original MainGameScreen - still don't know what this does.
         @Override
         public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
             if (fixture.getBody().getUserData() instanceof SolObject) {

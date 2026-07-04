@@ -85,7 +85,6 @@ public class MessageStep extends TutorialStep {
     @Override
     public boolean checkComplete(float timeStep) {
         if (solApplication.getOptions().controlType == GameOptions.ControlType.CONTROLLER && game.getHero().getPilot().isShoot()) {
-            // TODO: NUI doesn't support controller input at the moment, so we detect completion here.
             interactComplete = true;
         }
 

@@ -31,7 +31,6 @@ public class OrbitalEnemiesBuilder {
     private ArrayList<ShipConfig> orbitalEnemies = new ArrayList<>();
     //Offset Percentage represents how far apart enemies should be made, in terms of circumference of the planet
     private float offsetPercentage;
-    //TODO: Change atmosphere percentage to something more understandable, like height
     private float atmospherePercentage;
     private float detectionDistance;
 

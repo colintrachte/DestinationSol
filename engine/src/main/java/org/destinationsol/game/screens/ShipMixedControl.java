@@ -26,7 +26,6 @@ import org.destinationsol.common.SolMath;
 import org.destinationsol.game.Hero;
 import org.destinationsol.game.SolCam;
 import org.destinationsol.game.SolGame;
-import org.destinationsol.game.context.Context;
 import org.destinationsol.game.input.Mover;
 import org.destinationsol.game.input.Shooter;
 import org.destinationsol.ui.SolInputManager;

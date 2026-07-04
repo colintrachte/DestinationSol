@@ -24,6 +24,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.Strictness;
 import com.google.gson.stream.JsonReader;
 import org.destinationsol.Const;
 import org.destinationsol.IniReader;
@@ -50,8 +51,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -73,17 +72,14 @@ public class SaveManager {
         String hullName = hullConfigManager.getName(hull);
         logger.info("Saving ship: hull='{}', money={}, items={}", hullName, (int) money, itemsList.size());
 
-        AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
-            writeMercs(hero, hullConfigManager);
+        writeMercs(hero, hullConfigManager);
 
-            String items = itemsToString(itemsList);
+        String items = itemsToString(itemsList);
 
-            String waypoints = waypointsToString(hero.getWaypoints());
+        String waypoints = waypointsToString(hero.getWaypoints());
 
-            IniReader.write(Const.SAVE_FILE_NAME, "hull", hullName, "money", (int) money, "items", items,
-                    "x", spawnPosition.x, "y", spawnPosition.y, "waypoints", waypoints, "version", Const.VERSION);
-            return null;
-        });
+        IniReader.write(Const.SAVE_FILE_NAME, "hull", hullName, "money", (int) money, "items", items,
+                "x", spawnPosition.x, "y", spawnPosition.y, "waypoints", waypoints, "version", Const.VERSION);
     }
 
     private static String waypointsToString(ArrayList<Waypoint> waypoints) {
@@ -287,16 +283,12 @@ public class SaveManager {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String stringToWrite = gson.toJson(world);
 
-        AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
-            try (PrintWriter writer = new PrintWriter(fileName, "UTF-8")) {
-                writer.write(stringToWrite);
-                logger.debug("Successfully saved the world file");
-            } catch (FileNotFoundException | UnsupportedEncodingException e) {
-                logger.error("Could not save world file", e);
-            }
-
-            return null;
-        });
+        try (PrintWriter writer = new PrintWriter(fileName, "UTF-8")) {
+            writer.write(stringToWrite);
+            logger.debug("Successfully saved the world file");
+        } catch (FileNotFoundException | UnsupportedEncodingException e) {
+            logger.error("Could not save world file", e);
+        }
     }
 
     /**
@@ -306,8 +298,8 @@ public class SaveManager {
         if (SaveManager.resourceExists(Const.WORLD_SAVE_FILE_NAME)) {
             WorldConfig config = new WorldConfig();
             try (JsonReader reader = new JsonReader(new FileReader(SaveManager.getResourcePath(Const.WORLD_SAVE_FILE_NAME)))) {
-                reader.setLenient(true); // without this it will fail with strange errors
-                JsonObject world = new JsonParser().parse(reader).getAsJsonObject();
+                reader.setStrictness(Strictness.LENIENT); // without this it will fail with strange errors
+                JsonObject world = JsonParser.parseReader(reader).getAsJsonObject();
 
                 if (world.has("seed")) {
                     config.setSeed(world.get("seed").getAsLong());
@@ -360,7 +352,6 @@ public class SaveManager {
             } catch (FileNotFoundException e) {
                 logger.error("Cannot find world file", e);
             } catch (IOException e) {
-                // TODO: Don't ignore exception
                 // ignore exception
             }
         }

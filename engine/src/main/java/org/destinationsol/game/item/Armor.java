@@ -90,8 +90,12 @@ public class Armor implements SolItem {
                 return config.bulletHitSound;
             case ENERGY:
                 return config.energyHitSound;
+            case EXPLOSION:
+            case CRASH:
+            case FIRE:
+            default:
+                return null;
         }
-        return null;
     }
 
     public int isEquipped() {

@@ -40,7 +40,6 @@ import org.destinationsol.game.drawables.Drawable;
 import org.destinationsol.game.drawables.DrawableLevel;
 import org.destinationsol.game.drawables.RectSprite;
 import org.destinationsol.game.drawables.SpriteManager;
-import org.destinationsol.game.faction.Faction;
 import org.destinationsol.game.gun.GunMount;
 import org.destinationsol.game.input.Pilot;
 import org.destinationsol.game.item.Armor;
@@ -250,7 +249,6 @@ public class ShipBuilder {
 
     private Hull buildHull(SolGame game, Vector2 position, Vector2 velocity, float angle, float rotationSpeed, HullConfig hullConfig,
                            float life, ArrayList<Drawable> drawables) {
-        //TODO: This logic belongs in the HullConfigManager/HullConfig
         String shipName = hullConfig.getInternalName();
 
         JSONObject rootNode = Validator.getValidatedJSON(shipName, "engine:schemaHullConfig");

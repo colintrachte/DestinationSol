@@ -282,7 +282,7 @@ public abstract class SolarSystemGenerator {
             int index = SolRandom.seededRandomInt(featureGeneratorTypes.size());
             if ((PlanetGenerator.class.isAssignableFrom(featureGeneratorTypes.get(index)))) {
                 try {
-                    PlanetGenerator newFeatureGenerator = (PlanetGenerator) featureGeneratorTypes.get(index).newInstance();
+                    PlanetGenerator newFeatureGenerator = (PlanetGenerator) featureGeneratorTypes.get(index).getDeclaredConstructor().newInstance();
                     newFeatureGenerator.setPlanetConfigManager(planetConfigManager);
                     activeFeatureGenerators.add(newFeatureGenerator);
                     planetsLeft--;
@@ -313,7 +313,7 @@ public abstract class SolarSystemGenerator {
             int index = SolRandom.seededRandomInt(featureGeneratorTypes.size());
             if (MazeGenerator.class.isAssignableFrom(featureGeneratorTypes.get(index))) {
                 try {
-                    MazeGenerator newFeatureGenerator = (MazeGenerator) featureGeneratorTypes.get(index).newInstance();
+                    MazeGenerator newFeatureGenerator = (MazeGenerator) featureGeneratorTypes.get(index).getDeclaredConstructor().newInstance();
                     newFeatureGenerator.setMazeConfigManager(mazeConfigManager);
                     activeFeatureGenerators.add(newFeatureGenerator);
                     mazesLeft--;
@@ -346,7 +346,7 @@ public abstract class SolarSystemGenerator {
             if ((BeltGenerator.class.isAssignableFrom(featureGeneratorTypes.get(index)))) {
                 try {
                     if (SolRandom.seededTest(beltChance)) {
-                        BeltGenerator newFeatureGenerator = (BeltGenerator) featureGeneratorTypes.get(index).newInstance();
+                        BeltGenerator newFeatureGenerator = (BeltGenerator) featureGeneratorTypes.get(index).getDeclaredConstructor().newInstance();
                         newFeatureGenerator.setBeltConfigManager(beltConfigManager);
                         newFeatureGenerator.setInFirstSolarSystem(getSolarSystemNumber() == 0);
                         activeFeatureGenerators.add(newFeatureGenerator);
@@ -384,7 +384,7 @@ public abstract class SolarSystemGenerator {
             int index = SolRandom.seededRandomInt(featureGeneratorTypes.size());
             if (isOtherGeneratorType(index)) {
                 try {
-                    FeatureGenerator newFeatureGenerator = featureGeneratorTypes.get(index).newInstance();
+                    FeatureGenerator newFeatureGenerator = featureGeneratorTypes.get(index).getDeclaredConstructor().newInstance();
                     activeFeatureGenerators.add(newFeatureGenerator);
                     featuresLeft--;
                     consecutiveFailures = 0;

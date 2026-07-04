@@ -27,8 +27,6 @@ import org.destinationsol.assets.textures.DSTexture;
 import org.json.JSONArray;
 import org.destinationsol.game.drawables.SpriteManager;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.terasology.gestalt.assets.Asset;
 import org.terasology.gestalt.assets.ResourceUrn;
 import org.terasology.gestalt.entitysystem.prefab.Prefab;
@@ -49,8 +47,6 @@ import java.util.Set;
 public abstract class Assets {
     private static AssetHelper assetHelper;
     private static Set<ResourceUrn> textureList;
-
-    private static Logger logger = LoggerFactory.getLogger(Assets.class);
 
     /**
      * Initializes the class for loading assets using the given environment.
@@ -195,7 +191,6 @@ public abstract class Assets {
      * @return An AtlasRegion representing the loaded Texture.
      */
     public static TextureAtlas.AtlasRegion getAtlasRegion(String path, Texture.TextureFilter textureFilter) {
-        // TODO: Remove this sanitisation when no gestalt resource urns contain slashes.
         String sanitisedPath = path;
         if (path.contains("/")) {
             sanitisedPath = path.replace(path.substring(path.indexOf(':')+1, path.lastIndexOf('/')+1), "");

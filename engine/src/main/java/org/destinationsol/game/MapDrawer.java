@@ -18,7 +18,6 @@ package org.destinationsol.game;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import org.destinationsol.Const;
@@ -338,18 +337,17 @@ public class MapDrawer implements UpdateAwareSystem{
         BeaconHandler.Action bhAction = bh.getCurrAction();
         if (bhAction != null) {
             Vector2 beaconPos = bh.getPos();
-            TextureRegion icon = beaconMoveTexture;
+            TextureAtlas.AtlasRegion icon = beaconMoveTexture;
             if (bhAction == BeaconHandler.Action.ATTACK) {
                 icon = beaconAttackTexture;
             } else if (bhAction == BeaconHandler.Action.FOLLOW) {
                 icon = beaconFollowTexture;
             }
             float beaconSz = iconSz * 1.5f;
-            //      drawer.draw(icon, beaconSz, beaconSz, beaconSz/2, beaconSz/2, beaconPos.x, beaconPos.y, 0, SolColor.WHITE); interleaving
+            drawWaypointIcon(beaconSz, beaconPos, icon, drawer, SolColor.WHITE);
         }
     }
 
-    //TODO Don't pass null hero to drawObjIcon(). Then remove the annotation from drawObjIcon and remove the hero nullcheck
     public void drawStarPortIcon(GameDrawer drawer, float iconSz, Planet from, Planet to) {
         float angle = SolMath.angle(from.getPosition(), to.getPosition());
         Vector2 position = StarPort.getDesiredPosition(from, to, false);

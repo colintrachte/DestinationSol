@@ -5,7 +5,11 @@
       "Bash(dir \"C:\\\\Program Files\\\\Eclipse Adoptium\")",
       "Bash(dir \"C:\\\\Program Files\\\\Microsoft\")",
       "Bash(findstr /i \"jdk\\\\|java\")",
-      "Bash(JAVA_HOME=\"C:\\\\Program Files\\\\Eclipse Adoptium\\\\jdk-11.0.31.11-hotspot\" \"c:\\\\Users\\\\Colin\\\\Desktop\\\\DestinationSol\\\\gradlew.bat\" :engine:compileJava)"
+      "Bash(JAVA_HOME=\"C:\\\\Program Files\\\\Eclipse Adoptium\\\\jdk-11.0.31.11-hotspot\" \"c:\\\\Users\\\\Colin\\\\Desktop\\\\DestinationSol\\\\gradlew.bat\" :engine:compileJava)",
+      "PowerShell(Get-ChildItem \"D:\\\\Programming\\\\Sandbox\\\\GMS1\\\\My Projects\", \"D:\\\\Programming\\\\Sandbox\\\\GMS1\\\\Games\", \"D:\\\\Programming\\\\Sandbox\\\\GMS1\\\\Asset Bundles\", \"D:\\\\Programming\\\\Sandbox\\\\GMS1\\\\Tutorials\" | Select-Object @{n='Parent';e={$_.Parent.Name}}, Name)",
+      "PowerShell(Get-ChildItem \"D:\\\\Programming\\\\Sandbox\\\\GMS1\\\\Games\\\\Space\", \"D:\\\\Programming\\\\Sandbox\\\\GMS1\\\\Asset Bundles\\\\Space\" -ErrorAction SilentlyContinue | Select-Object @{n='Parent';e={$_.Parent.Parent.Name + '\\\\' + $_.Parent.Name}}, Name)",
+      "PowerShell(Get-ChildItem \"D:\\\\Programming\\\\Sandbox\\\\GMS1\\\\Games\" -Directory | ForEach-Object { $_.Name; Get-ChildItem $_.FullName | ForEach-Object { \"  \" + $_.Name } })",
+      "PowerShell(Get-ChildItem \"D:\\\\Programming\\\\Sandbox\\\\GMS1\\\\Tutorials\" -Directory | ForEach-Object { $_.Name; Get-ChildItem $_.FullName | ForEach-Object { \"  \" + $_.Name } })"
     ]
   }
 }

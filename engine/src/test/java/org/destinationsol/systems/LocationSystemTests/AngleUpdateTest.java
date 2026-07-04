@@ -16,7 +16,6 @@
 package org.destinationsol.systems.LocationSystemTests;
 
 import org.destinationsol.entitysystem.EntitySystemManager;
-import org.destinationsol.game.context.internal.ContextImpl;
 import org.destinationsol.location.components.Angle;
 import org.destinationsol.location.events.AngleUpdateEvent;
 import org.destinationsol.location.systems.LocationSystem;

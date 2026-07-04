@@ -18,14 +18,11 @@ package org.destinationsol.world.generators;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.physics.box2d.Box2D;
-import com.badlogic.gdx.physics.box2d.World;
 import org.destinationsol.assets.sound.OggSoundManager;
 import org.destinationsol.files.HullConfigManager;
 import org.destinationsol.game.AbilityCommonConfigs;
 import org.destinationsol.game.GameColors;
 import org.destinationsol.game.WorldConfig;
-import org.destinationsol.game.context.Context;
-import org.destinationsol.game.context.internal.ContextImpl;
 import org.destinationsol.game.item.ItemManager;
 import org.destinationsol.game.maze.MazeConfigManager;
 import org.destinationsol.game.particle.EffectTypes;
@@ -36,6 +33,7 @@ import org.destinationsol.modules.ModuleManager;
 import org.destinationsol.testingUtilities.MockGL;
 import org.destinationsol.testsupport.AssetsHelperInitializer;
 import org.destinationsol.world.GalaxyBuilder;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -44,7 +42,6 @@ import org.terasology.gestalt.di.DefaultBeanContext;
 import org.terasology.gestalt.di.ServiceRegistry;
 
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -60,6 +57,7 @@ public class PlanetGeneratorTest implements AssetsHelperInitializer {
     private AbilityCommonConfigs abilityCommonConfigs;
     private SolarSystemGenerator solarSystemGenerator;
     private PlanetGenerator planetGenerator;
+    private DefaultBeanContext context;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -82,7 +80,7 @@ public class PlanetGeneratorTest implements AssetsHelperInitializer {
         registry.with(GalaxyBuilder.class).lifetime(Lifetime.Singleton);
 
 
-        DefaultBeanContext context = new DefaultBeanContext(registry);
+        context = new DefaultBeanContext(registry);
         context.getBean(MazeConfigManager.class).loadDefaultMazeConfigs();
         context.getBean(PlanetConfigManager.class).loadDefaultPlanetConfigs();
         context.getBean(BeltConfigManager.class).loadDefaultBeltConfigs();
@@ -94,6 +92,11 @@ public class PlanetGeneratorTest implements AssetsHelperInitializer {
         solarSystemGenerator = solarSystemGenerators.get(0);
         setupSolarSystemGenerator();
         planetGenerator = (PlanetGenerator) solarSystemGenerators.get(0).getActiveFeatureGenerators().get(1);
+    }
+
+    @AfterEach
+    public void tearDown() throws Exception {
+        context.close();
     }
 
     private void setupMockGL() {

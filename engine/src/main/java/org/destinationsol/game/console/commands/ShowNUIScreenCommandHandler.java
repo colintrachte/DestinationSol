@@ -15,7 +15,6 @@
  */
 package org.destinationsol.game.console.commands;
 
-import org.destinationsol.assets.Assets;
 import org.destinationsol.game.SolGame;
 import org.destinationsol.game.console.annotations.Command;
 import org.destinationsol.game.console.annotations.CommandParam;
@@ -23,9 +22,6 @@ import org.destinationsol.game.console.annotations.Game;
 import org.destinationsol.game.console.annotations.RegisterCommands;
 import org.destinationsol.game.console.suggesters.NUIScreenSuggester;
 import org.destinationsol.ui.nui.NUIManager;
-import org.destinationsol.ui.nui.NUIScreenLayer;
-import org.terasology.gestalt.assets.ResourceUrn;
-import org.terasology.nui.asset.UIElement;
 
 /**
  * A command used to display a particular NUI screen

@@ -18,7 +18,6 @@ package org.destinationsol.rendering;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
-import org.destinationsol.common.SolMath;
 import org.destinationsol.game.drawables.DrawableLevel;
 import org.destinationsol.size.components.Size;
 
@@ -59,8 +58,6 @@ public class RenderableElement {
      */
     public Vector2 graphicsOffset;
 
-
-    //TODO this should be automatically called when the Size component is changed, e.g. the entity shrinks or grows
     /**
      * Resizes the renderable element to the given size. The larger dimension of the texture is set to the size, and the
      * smaller one is scaled down proportionally.

@@ -110,8 +110,6 @@ public class PointProjectileBody implements ProjectileBody {
         @Override
         public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
 
-            //TODO This is a patch to smooth over contact between an Entity and a Projectile. Once Projectile has been
-            // converted to be an Entity, this can be removed.
             Object userData = fixture.getBody().getUserData();
             if (userData instanceof EntityRef) {
                 userData = new SolObjectEntityWrapper((EntityRef) userData);

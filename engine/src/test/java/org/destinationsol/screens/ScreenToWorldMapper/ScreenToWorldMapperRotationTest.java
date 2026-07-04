@@ -103,7 +103,7 @@ public class ScreenToWorldMapperRotationTest {
                 new Vector2(screenWidth, screenHeight), clickPos, camPos, 45.0f, zoom);
 
         Vector2 expectedValue = camPos
-                .add(new Vector2(0.5f, 0.5f).rotate(45.0f).scl(ScreenToWorldMapper.PIXEL_TO_WORLD_UNIT_RATIO * zoom));
+                .add(new Vector2(0.5f, 0.5f).rotateDeg(45.0f).scl(ScreenToWorldMapper.PIXEL_TO_WORLD_UNIT_RATIO * zoom));
         assertEquals(expectedValue.x, worldPos.x, 0.00001, "X elements");
         assertEquals(expectedValue.y, worldPos.y, 0.00001, "Y elements");
 

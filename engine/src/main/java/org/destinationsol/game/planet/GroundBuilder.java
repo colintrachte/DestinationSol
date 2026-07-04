@@ -96,7 +96,7 @@ public class GroundBuilder {
             ds[x] = mul * (ds[x] - shift);
         }
     }
-//TODO - someone inspect this - what is this? - maybe finish this
+
     private void createDungeon() {
         int nodeCount = 3; // should depend on something
         for (int i = 0; i < nodeCount; i++) {

@@ -45,7 +45,6 @@ public interface SolUiScreen {
      *
      * @param solApplication {@code SolApplication} displaying this window.
      */
-    //TODO maybe rename to onFocus() ? Inspect more whether name is completely fitting.
     void onAdd(SolApplication solApplication);
 
     /**
@@ -63,7 +62,6 @@ public interface SolUiScreen {
      * Return true if cursor is in the screen area, false otherwise.
      *
      * Should also return false if the screen takes up a whole width of window and does not cover another screen. (???)
-     * TODO whats wrong with this method??? Create some cleaner algorithm for deciding what this method should output.
      *
      * @param inputPointer Input pointer against which to check.
      * @return True if pointer in screen area, false otherwise.
@@ -77,7 +75,6 @@ public interface SolUiScreen {
      *
      * @param solApplication {@code SolApplication} displaying this window.
      */
-    //TODO maybe rename to onClose()/onUnfocus() ? Inspect more whether name is completely fitting.
     void blurCustom(SolApplication solApplication);
 
     /**

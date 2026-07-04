@@ -34,8 +34,6 @@ public class SolContactFilter implements ContactFilter {
             return true;
         }
 
-        //TODO Everything after this will need to be replaced when Projectile is refactored to work with ECS
-
         SolObject oA = (SolObject) fixtureA.getBody().getUserData();
         SolObject oB = (SolObject) fixtureB.getBody().getUserData();
 

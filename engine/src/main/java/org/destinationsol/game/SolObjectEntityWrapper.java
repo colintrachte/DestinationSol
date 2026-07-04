@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * TODO
  * This is a {@link SolObject} wrapper for an {@link EntityRef}. This is is a patch for the in-between period between
  * Object-Oriented design and Entity-Component-System architecture, so once everything has been converted, this can be
  * deleted.

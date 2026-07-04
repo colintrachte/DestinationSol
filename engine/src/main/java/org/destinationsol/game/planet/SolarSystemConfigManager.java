@@ -78,7 +78,6 @@ public class SolarSystemConfigManager {
             configsToLoad.put(name, solarSystemConfig);
         }
 
-        //TODO: determine why "engine" module is excluded
         Set<ResourceUrn> configUrnList = Assets.getAssetHelper().listAssets(Json.class, assetType, new Name("engine"));
 
         for (ResourceUrn configUrn : configUrnList) {

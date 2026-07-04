@@ -34,7 +34,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -92,10 +91,10 @@ public class ConsoleImpl implements Console {
         commandRegistry.clear();
         for (Class commands : context.get(ModuleManager.class).getEnvironment().getTypesAnnotatedWith(RegisterCommands.class)) {
             try {
-                Object commandsObject = commands.newInstance();
+                Object commandsObject = commands.getDeclaredConstructor().newInstance();
                 InjectionHelper.inject(commandsObject, context);
                 MethodCommand.registerAvailable(commandsObject, this, game, context);
-            } catch (InstantiationException | IllegalAccessException e) {
+            } catch (ReflectiveOperationException e) {
                 logger.error("Failed to instantiate command class '{}'", commands.getName(), e);
             }
         }

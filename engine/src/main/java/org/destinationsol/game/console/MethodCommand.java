@@ -16,8 +16,6 @@
 package org.destinationsol.game.console;
 
 import com.google.common.base.Preconditions;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.destinationsol.game.SolGame;
@@ -31,7 +29,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -78,7 +75,7 @@ public final class MethodCommand extends AbstractCommand {
      * Registers all available command methods annotated with {@link
      */
     public static void registerAvailable(Object provider, Console console, SolGame game, Context context) {
-        Set<Method> commandMethods = Sets.newHashSet(); // TODO replace with gestalt-di's impl
+        Set<Method> commandMethods = Sets.newHashSet();
         for (Method method : provider.getClass().getDeclaredMethods()) {
             if((method.getModifiers() & Modifier.PUBLIC) == 1 && method.getAnnotation(Command.class) != null){
                 commandMethods.add(method);

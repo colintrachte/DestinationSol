@@ -219,7 +219,6 @@ public final class HullConfigManager {
     }
 
     // Seems to offsets all positions by the shipbuilder origin
-    // Todo: Find out what this function does and provide a better name.
     private void process(HullConfig.Data configData) {
         Vector2 builderOrigin = new Vector2(configData.shipBuilderOrigin);
 

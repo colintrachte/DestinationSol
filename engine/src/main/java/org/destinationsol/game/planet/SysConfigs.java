@@ -85,8 +85,6 @@ public class SysConfigs {
 
                 SysConfig config = configs.get(name);
 
-                // TODO : Maybe add sanity checks for config?
-
                 config.tempEnemies.addAll(ShipConfig.loadList(node.has("temporaryEnemies") ? node.getJSONArray("temporaryEnemies") : null, hullConfigs, itemManager));
                 config.innerTempEnemies.addAll(ShipConfig.loadList(node.has("innerTemporaryEnemies") ? node.getJSONArray("innerTemporaryEnemies") : null, hullConfigs, itemManager));
 

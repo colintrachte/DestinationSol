@@ -75,7 +75,6 @@ public class GalaxyBuilderTest implements AssetsHelperInitializer {
         Box2D.init();
     }
 
-    // TODO: This method is duplicated in most of the world generation tests. Maybe move it into an initialiser interface?
     private void setupConfigManagers() {
         ItemManager itemManager = setupItemManager();
         HullConfigManager hullConfigManager = setupHullConfigManager(itemManager);

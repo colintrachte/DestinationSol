@@ -87,9 +87,7 @@ import java.util.Set;
 @API
 public class SolApplication implements ApplicationListener {
     private static final Logger logger = LoggerFactory.getLogger(SolApplication.class);
-    // TODO: Make this non-static.
     public static DisplayDimensions displayDimensions;
-    // TODO: Make this non-static.
     private static Set<ResizeSubscriber> resizeSubscribers;
     private final float targetFPS;
     @Inject
@@ -119,7 +117,6 @@ public class SolApplication implements ApplicationListener {
     private ComponentManager componentManager;
     private BeanContext appContext;
     private BeanContext gameContext;
-    //TODO remove this line - it is for debugging purposes
     private boolean entityCreated = false;
 
     @Inject
@@ -140,7 +137,6 @@ public class SolApplication implements ApplicationListener {
                 new ContextWrapperService());
     }
 
-    // TODO: Make this non-static.
     public static void addResizeSubscriber(ResizeSubscriber resizeSubscriber) {
         resizeSubscribers.add(resizeSubscriber);
     }
@@ -284,7 +280,6 @@ public class SolApplication implements ApplicationListener {
             //This event causes each entity with a `Renderable` component to be rendered onscreen
             entitySystemManager.sendEvent(new RenderEvent(), new Renderable(), new Position());
 
-            //TODO remove this block - it is for debugging purposes
             if (DebugOptions.SPAWN_ECS_ASTEROID && !entityCreated) {
 
                 Size size = new Size();
@@ -348,7 +343,6 @@ public class SolApplication implements ApplicationListener {
                 new ContextWrapperService());
         solGame = gameContext.getBean(SolGame.class);
 
-        //TODO: rework how system will trigger preBegin
         Set<ComponentSystem> systems = Sets.newHashSet();
         systems.addAll(gameContext.getBeans(ComponentSystem.class));
         systems.addAll(moduleManager.getEnvironment().getBeans(ComponentSystem.class));
@@ -414,7 +408,6 @@ public class SolApplication implements ApplicationListener {
     public void finishGame() {
         logger.info("Game session ended, returning to main menu");
         solGame.onGameEnd(gameContext.getBean(Context.class));
-        // TODO: remove the following line when all screens have been ported to use NUI
         inputManager.setScreen(this, null);
         inputManager.update(this); // Force an update to remove all the InputManager UI screens
 

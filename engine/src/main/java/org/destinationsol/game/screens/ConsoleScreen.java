@@ -22,7 +22,6 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import org.destinationsol.SolApplication;
 import org.destinationsol.assets.Assets;
-import org.destinationsol.common.In;
 import org.destinationsol.common.SolColor;
 import org.destinationsol.game.SolGame;
 import org.destinationsol.game.console.Console;
@@ -32,14 +31,10 @@ import org.destinationsol.game.console.CoreMessageType;
 import org.destinationsol.game.console.CyclingTabCompletionEngine;
 import org.destinationsol.game.console.Message;
 import org.destinationsol.game.console.TabCompletionEngine;
-import org.destinationsol.game.context.Context;
-import org.destinationsol.modules.ModuleManager;
 import org.destinationsol.ui.SolInputManager;
 import org.destinationsol.ui.SolUiControl;
 import org.destinationsol.ui.SolUiScreen;
 import org.destinationsol.ui.UiDrawer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
@@ -48,8 +43,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class ConsoleScreen implements SolUiScreen, ConsoleSubscriber {
-    private static final Logger logger = LoggerFactory.getLogger(ConsoleScreen.class);
-
     /**
      * Magic happens here.
      * <p>

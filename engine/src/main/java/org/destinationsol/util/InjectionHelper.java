@@ -24,13 +24,10 @@ import org.terasology.gestalt.util.reflection.ParameterProvider;
 import org.terasology.gestalt.util.reflection.SimpleClassFactory;
 
 import java.lang.reflect.Field;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 
-// TODO replace with gestalt-di's impl
 public final class InjectionHelper {
     private static final Logger logger = LoggerFactory.getLogger(InjectionHelper.class);
 
@@ -38,28 +35,23 @@ public final class InjectionHelper {
     }
 
     public static void inject(final Object object, Context context) {
-        AccessController.doPrivileged((PrivilegedAction<Object>) () -> {
-
-            Set<Field> fields = Sets.newHashSet(); // TODO replace with gestalt-di's impl
-            for (Field field : object.getClass().getDeclaredFields()) {
-                if (field.getAnnotation(In.class) != null) {
-                    fields.add(field);
+        Set<Field> fields = Sets.newHashSet();
+        for (Field field : object.getClass().getDeclaredFields()) {
+            if (field.getAnnotation(In.class) != null) {
+                fields.add(field);
+            }
+        }
+        for (Field field : fields) {
+            Object value = context.get(field.getType());
+            if (value != null) {
+                try {
+                    field.setAccessible(true);
+                    field.set(object, value);
+                } catch (IllegalAccessException e) {
+                    logger.error("Failed to inject value {} into field {} of {}", value, field, object, e);
                 }
             }
-            for (Field field : fields) {
-                Object value = context.get(field.getType());
-                if (value != null) {
-                    try {
-                        field.setAccessible(true);
-                        field.set(object, value);
-                    } catch (IllegalAccessException e) {
-                        logger.error("Failed to inject value {} into field {} of {}", value, field, object, e);
-                    }
-                }
-            }
-
-            return null;
-        });
+        }
     }
 
     /**

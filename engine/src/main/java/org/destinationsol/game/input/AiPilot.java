@@ -28,8 +28,6 @@ import org.destinationsol.game.ship.FarShip;
 import org.destinationsol.game.ship.SolShip;
 import org.destinationsol.game.ship.hulls.HullConfig;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class AiPilot implements Pilot {
 

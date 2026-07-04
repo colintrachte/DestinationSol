@@ -46,10 +46,8 @@ import org.terasology.nui.reflection.WidgetLibrary;
 import org.terasology.nui.skin.UISkinAsset;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -97,11 +95,9 @@ public class AssetHelper {
         }
         logger.debug("Registered {} NUI widget type(s)", widgetCount);
 
-        // TODO inject this
         assetTypeManager.createAssetType(UISkinAsset.class, UISkinAsset::new, "skins");
         ((AssetFileDataProducer) assetTypeManager.getAssetType(UISkinAsset.class).get().getProducers().get(0)).addAssetFormat(new UISkinFormat(widgetLibrary));
 
-        // TODO inject this
         assetTypeManager.createAssetType(UIElement.class, UIElement::new, "ui");
         ((AssetFileDataProducer) assetTypeManager.getAssetType(UIElement.class).get().getProducers().get(0)).addAssetFormat(new UIFormat(widgetLibrary,beanContext));
 

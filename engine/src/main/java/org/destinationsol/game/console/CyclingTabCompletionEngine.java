@@ -124,7 +124,7 @@ public class CyclingTabCompletionEngine implements TabCompletionEngine {
 /*            if (matches.length > MAX_CYCLES) {
                 console.addMessage(new Message("Too many hits, please refine your search"));
                 return query;
-            }*/ //TODO Find out a better way to handle too many results while returning useful information
+            }*/
 
             previousMatches = Lists.newArrayList(matches);
             Collections.sort(previousMatches);

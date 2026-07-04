@@ -15,7 +15,6 @@
  */
 package org.destinationsol.assets.ui;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -26,6 +25,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
+import com.google.gson.Strictness;
 import com.google.gson.stream.JsonReader;
 import org.destinationsol.assets.Assets;
 import org.joml.Vector2i;
@@ -58,6 +58,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -91,9 +92,9 @@ public class UIFormat extends AbstractAssetFileFormat<UIData> {
 
     @Override
     public UIData load(ResourceUrn resourceUrn, List<AssetDataFile> inputs) throws IOException {
-        try (JsonReader reader = new JsonReader(new InputStreamReader(inputs.get(0).openStream(), Charsets.UTF_8))) {
-            reader.setLenient(true);
-            UIData data = load(new JsonParser().parse(reader));
+        try (JsonReader reader = new JsonReader(new InputStreamReader(inputs.get(0).openStream(), StandardCharsets.UTF_8))) {
+            reader.setStrictness(Strictness.LENIENT);
+            UIData data = load(JsonParser.parseReader(reader));
             data.setSource(inputs.get(0));
             return data;
         }

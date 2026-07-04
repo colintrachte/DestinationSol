@@ -343,7 +343,6 @@ public class PlanetObjectsBuilder {
         Vector2 distanceToPlanet = SolMath.getVec(planet.getPosition()).sub(position);
         logger.info("Planet: " + planet.getName() + ", Station Vector: " + distanceToPlanet.toString());
         float angle = 0;
-        //TODO: Determine why distanceToPlanet is occasionally equal to {NaN, NaN}
         if (!distanceToPlanet.equals(new Vector2(Float.NaN, Float.NaN))) {
             angle = SolMath.angle(distanceToPlanet) - 180;
         } else {

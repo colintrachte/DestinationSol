@@ -59,8 +59,6 @@ public class SolContactListener implements ContactListener {
             entitySystemManager.sendEvent(new ContactEvent(entityA, contact), entityB);
         }
 
-        //TODO This is a patch to smooth over contact between an Entity and a Projectile. Once Projectile has been converted
-        // to be an Entity, this can be removed.
         if (dataA instanceof EntityRef) {
             dataA = new SolObjectEntityWrapper((EntityRef) dataA);
         }
@@ -68,8 +66,6 @@ public class SolContactListener implements ContactListener {
             dataB = new SolObjectEntityWrapper((EntityRef) dataB);
         }
 
-        //TODO This is legacy code for handling contact with a Projectile, which currently is designed to work with SolObjects.
-        // Once Projectile has been converted to be an entity, this should be refactored.
         SolObject firstSolObject = (SolObject) dataA;
         SolObject secondSolObject = (SolObject) dataB;
         boolean firstSolObjectIsProjectile = firstSolObject instanceof Projectile;
@@ -101,21 +97,15 @@ public class SolContactListener implements ContactListener {
         if (dataA instanceof EntityRef) {
             entitySystemManager.sendEvent(new ImpulseEvent(collPos, absImpulse), (EntityRef) dataA);
 
-            //TODO This is a patch to smooth over contact between an entity and a SolObject.
-            // Once every SolObject has been converted to an entity, this can be removed.
             dataA = new SolObjectEntityWrapper((EntityRef) dataA);
         }
 
         if (dataB instanceof EntityRef) {
             entitySystemManager.sendEvent(new ImpulseEvent(collPos, absImpulse), (EntityRef) dataB);
 
-            //TODO This is a patch to smooth over contact between an entity and a SolObject.
-            // Once every SolObject has been converted to an entity, this can be removed.
             dataB = new SolObjectEntityWrapper((EntityRef) dataB);
         }
 
-        //TODO This is legacy code for handling contact between SolObjects.
-        // Once every SolObject has been converted to an entity, this can be removed.
         SolObject firstSolObject = (SolObject) dataA;
         SolObject secondSolObject = (SolObject) dataB;
         if (firstSolObject instanceof Projectile && ((Projectile) firstSolObject).getConfig().density <= 0) {

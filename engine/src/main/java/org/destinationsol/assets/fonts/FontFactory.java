@@ -15,7 +15,6 @@
  */
 package org.destinationsol.assets.fonts;
 
-import org.terasology.context.annotation.Service;
 import org.terasology.gestalt.assets.AssetFactory;
 import org.terasology.gestalt.assets.AssetType;
 import org.terasology.gestalt.assets.ResourceUrn;

@@ -48,7 +48,7 @@ public class ScaledFontProducer implements AssetDataProducer<FontData> {
      */
     @Inject
     public ScaledFontProducer(AssetHelper assetHelper) {
-        this.assetHelper = assetHelper; // TODO provide AssetManager
+        this.assetHelper = assetHelper;
     }
 
     @Override

@@ -148,7 +148,6 @@ public class Projectile implements SolObject {
                 } else {
                     collided(game);
 
-                    //TODO Once SolShip is an entity, this should be refactored to work with it
 //                    if (config.emTime > 0 && obstacle instanceof SolShip) {
 //                        ((SolShip) obstacle).disableControls(config.emTime, game);
 //                    }
@@ -157,8 +156,6 @@ public class Projectile implements SolObject {
                 }
 
             } else {
-                //TODO this else block is legacy code for handling contact between a SolObject and an entity. Once every
-                // SolObject has been converted to an entity, this can be removed.
                 if (!wasDamageDealt) {
                     if (config.aoeRadius >= 0) { //If AoE is enabled for this Projectile, damage all within the radius.
                         game.getObjectManager().doToAllCloserThan(config.aoeRadius, this, (SolObject obj) ->

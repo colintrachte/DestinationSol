@@ -31,7 +31,6 @@ import org.terasology.gestalt.entitysystem.event.Event;
 import org.terasology.gestalt.entitysystem.event.EventSystem;
 import org.terasology.gestalt.entitysystem.event.impl.EventReceiverMethodSupport;
 import org.terasology.gestalt.entitysystem.event.impl.EventSystemImpl;
-import org.terasology.gestalt.module.ModuleEnvironment;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

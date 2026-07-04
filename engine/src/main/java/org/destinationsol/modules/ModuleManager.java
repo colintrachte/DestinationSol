@@ -16,7 +16,6 @@
 package org.destinationsol.modules;
 
 import com.google.common.collect.Sets;
-import org.destinationsol.entitysystem.ComponentSystem;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.terasology.gestalt.di.BeanContext;
@@ -27,8 +26,6 @@ import org.terasology.gestalt.module.ModuleMetadata;
 import org.terasology.gestalt.module.ModulePathScanner;
 import org.terasology.gestalt.module.ModuleRegistry;
 import org.terasology.gestalt.module.sandbox.APIScanner;
-import org.terasology.gestalt.module.sandbox.ModuleSecurityManager;
-import org.terasology.gestalt.module.sandbox.ModuleSecurityPolicy;
 import org.terasology.gestalt.module.sandbox.StandardPermissionProviderFactory;
 import org.terasology.gestalt.naming.Name;
 import org.terasology.gestalt.naming.Version;
@@ -36,9 +33,6 @@ import org.terasology.gestalt.naming.Version;
 import javax.inject.Inject;
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.ReflectPermission;
-import java.security.Policy;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -277,20 +271,9 @@ public class ModuleManager implements AutoCloseable {
             permissionFactory.getBasePermissionSet().addAPIClass(apiClass);
         }
 
-        // The JSON serializers need to reflect classes to discover what exists
-        permissionFactory.getBasePermissionSet().grantPermission("com.google.gson", ReflectPermission.class);
-        permissionFactory.getBasePermissionSet().grantPermission("com.google.gson.internal", ReflectPermission.class);
-        permissionFactory.getBasePermissionSet().grantPermission("com.google.gson", RuntimePermission.class);
-        permissionFactory.getBasePermissionSet().grantPermission("com.google.gson.internal", RuntimePermission.class);
-
         APIScanner scanner = new APIScanner(permissionFactory);
         for(Module module: modules){
             scanner.scan(module.getClassIndex());
-        }
-
-        if (moduleConfig.useSecurityManager()) {
-            Policy.setPolicy(new ModuleSecurityPolicy());
-            System.setSecurityManager(new ModuleSecurityManager());
         }
 
         environment = new ModuleEnvironment(beanContext, modules, permissionFactory, moduleConfig.getClassLoaderSupplier());
@@ -305,7 +288,6 @@ public class ModuleManager implements AutoCloseable {
         return builtInModules;
     }
 
-    //TODO: REMOVE THIS
     public static ModuleEnvironment getEnvironmentStatic() {
         return environment;
     }

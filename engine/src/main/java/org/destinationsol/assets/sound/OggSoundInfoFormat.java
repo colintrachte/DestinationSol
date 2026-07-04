@@ -15,7 +15,6 @@
  */
 package org.destinationsol.assets.sound;
 
-import com.google.common.base.Charsets;
 import org.destinationsol.IniReader;
 import org.terasology.gestalt.assets.format.AbstractAssetAlterationFileFormat;
 import org.terasology.gestalt.assets.format.AssetDataFile;
@@ -25,6 +24,7 @@ import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 
 @RegisterAssetSupplementalFileFormat
 public class OggSoundInfoFormat extends AbstractAssetAlterationFileFormat<OggSoundData> {
@@ -35,7 +35,7 @@ public class OggSoundInfoFormat extends AbstractAssetAlterationFileFormat<OggSou
 
     @Override
     public void apply(AssetDataFile input, OggSoundData assetData) throws IOException {
-        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(input.openStream(), Charsets.UTF_8))) {
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(input.openStream(), StandardCharsets.UTF_8))) {
             IniReader iniReader = new IniReader(bufferedReader);
             assetData.setMetadata(iniReader.getFloat("loopTime", 0.0f), iniReader.getFloat("volume", 1.0f));
         }

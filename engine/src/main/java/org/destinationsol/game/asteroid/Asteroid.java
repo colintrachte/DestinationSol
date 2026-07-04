@@ -46,6 +46,14 @@ public class Asteroid implements SolObject {
     private static final float MAX_SPLIT_SPD = 1f;
     private static final float DUR = .5f;
     private static final float CHIP_CHANCE = 0.2f;
+    // Chips only break off parents at least this big...
+    private static final float MIN_CHIP_PARENT_SZ = .4f;
+    // ...when a single hit removes at least this fraction of max life. Atmosphere
+    // burn and resting contacts deal damage every frame; without this gate (and
+    // the cooldown below) they roll the chip chance ~60 times a second and flood
+    // the world with debris.
+    private static final float CHIP_DMG_FRACTION = .02f;
+    private static final float CHIP_COOLDOWN = .5f;
 
     private final Body body;
     private final Vector2 position;
@@ -60,6 +68,7 @@ public class Asteroid implements SolObject {
     private float angle;
     private float life;
     private float size;
+    private float chipCooldown;
 
     Asteroid(SolGame game, TextureAtlas.AtlasRegion tex, Body body, float size, RemoveController removeController, ArrayList<Drawable> drawables) {
         texture = tex;
@@ -137,6 +146,9 @@ public class Asteroid implements SolObject {
         smokeSource.setWorking(burning);
         fireSource.setWorking(burning);
         setParamsFromBody();
+        if (chipCooldown > 0) {
+            chipCooldown -= game.getTimeStep();
+        }
     }
 
     private boolean updateInAtm(SolGame game) {
@@ -281,9 +293,13 @@ public class Asteroid implements SolObject {
 
         if (
             life > 0 &&
-            size >= MIN_SPLIT_SZ &&
+            size >= MIN_CHIP_PARENT_SZ &&
+            dmgType != DmgType.FIRE &&
+            chipCooldown <= 0 &&
+            dmg >= CHIP_DMG_FRACTION * SZ_TO_LIFE * size * size &&
             SolRandom.randomFloat(1f) < CHIP_CHANCE
         ) {
+            chipCooldown = CHIP_COOLDOWN;
             spawnChip(game, hitPos);
         }
 
@@ -296,10 +312,7 @@ public class Asteroid implements SolObject {
 
         float chipSize =
             size * SolRandom.randomFloat(.05f, .12f);
-            
-        if (size < 0.4f) {
-            return;
-        }
+
         Vector2 chipVelocity = new Vector2();
 
         float angle = SolRandom.randomFloat(360);

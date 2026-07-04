@@ -17,7 +17,6 @@ package org.destinationsol.systems.LocationSystemTests;
 
 import com.badlogic.gdx.math.Vector2;
 import org.destinationsol.entitysystem.EntitySystemManager;
-import org.destinationsol.game.context.internal.ContextImpl;
 import org.destinationsol.location.components.Position;
 import org.destinationsol.location.events.PositionUpdateEvent;
 import org.destinationsol.location.systems.LocationSystem;

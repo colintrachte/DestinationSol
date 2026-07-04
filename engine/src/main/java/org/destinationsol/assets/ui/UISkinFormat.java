@@ -1,6 +1,5 @@
 package org.destinationsol.assets.ui;
 
-import com.google.common.base.Charsets;
 import com.google.common.primitives.UnsignedInts;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -10,6 +9,7 @@ import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.Strictness;
 import com.google.gson.stream.JsonReader;
 import org.destinationsol.assets.Assets;
 import org.slf4j.Logger;
@@ -34,6 +34,7 @@ import javax.inject.Inject;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -46,7 +47,6 @@ public class UISkinFormat extends AbstractAssetFileFormat<UISkinData> {
 
     private static final Logger logger = LoggerFactory.getLogger(UISkinFormat.class);
     private Gson gson;
-    private static ClassLibrary<UIWidget> widgetClassLibrary;
 
     @Inject
     public UISkinFormat(WidgetLibrary widgetClassLibrary) {
@@ -61,13 +61,12 @@ public class UISkinFormat extends AbstractAssetFileFormat<UISkinData> {
                 .enableComplexMapKeySerialization()
                 .serializeNulls()
                 .create();
-        this.widgetClassLibrary = widgetClassLibrary;
     }
 
     @Override
     public UISkinData load(ResourceUrn urn, List<AssetDataFile> inputs) throws IOException {
-        try (JsonReader reader = new JsonReader(new InputStreamReader(inputs.get(0).openStream(), Charsets.UTF_8))) {
-            reader.setLenient(true);
+        try (JsonReader reader = new JsonReader(new InputStreamReader(inputs.get(0).openStream(), StandardCharsets.UTF_8))) {
+            reader.setStrictness(Strictness.LENIENT);
             UISkinData data = gson.fromJson(reader, UISkinData.class);
             data.setSource(inputs.get(0));
             return data;

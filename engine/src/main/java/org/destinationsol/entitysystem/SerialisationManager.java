@@ -20,8 +20,6 @@ import com.google.protobuf.ByteString;
 import org.destinationsol.game.SaveManager;
 import org.destinationsol.modules.ModuleManager;
 import org.destinationsol.protobuf.EntityData;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.terasology.gestalt.assets.ResourceUrn;
 import org.terasology.gestalt.entitysystem.component.Component;
 import org.terasology.gestalt.entitysystem.entity.EntityManager;
@@ -39,8 +37,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class SerialisationManager {
-
-    private static final Logger logger = LoggerFactory.getLogger(SerialisationManager.class);
 
     private File file;
     private EntityManager entityManager;
@@ -117,8 +113,7 @@ public final class SerialisationManager {
         output.close();
     }
 
-    public void deserialise() throws IOException, ClassNotFoundException, InstantiationException,
-            IllegalAccessException, NoSuchFieldException {
+    public void deserialise() throws IOException, ClassNotFoundException, ReflectiveOperationException {
         FileInputStream input = new FileInputStream(file);
         EntityData.EntityStore store = EntityData.EntityStore.parseFrom(input);
         input.close();
@@ -128,7 +123,7 @@ public final class SerialisationManager {
 
             for (EntityData.Component component : entity.getComponentList()) {
                 Class<?> componentClass = classLookup.get(component.getTypeName());
-                Component<?> componentObject = (Component<?>) componentClass.newInstance();
+                Component<?> componentObject = (Component<?>) componentClass.getDeclaredConstructor().newInstance();
 
                 for (EntityData.Field field : component.getFieldList()) {
                     Field componentObjectField = componentClass.getDeclaredField(field.getName());

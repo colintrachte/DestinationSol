@@ -60,7 +60,6 @@ public class CollisionWarnDrawer extends WarnDrawer {
     private class CollisionRayCastCallback implements RayCastCallback {
         private boolean show;
 
-        //TODO code from era when hero was SolShip - does this still work? (what is it supposed to do?)
         @Override
         public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
             if (fixture.getBody().getUserData() instanceof SolObject) {

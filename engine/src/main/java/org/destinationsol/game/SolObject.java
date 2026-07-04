@@ -178,7 +178,6 @@ public interface SolObject {
      *
      * @return Debug string with information about the object.
      */
-    //TODO - improve/rework debug collection, displaying and related. See discussion in https://github.com/MovingBlocks/DestinationSol/pull/269 for more details
     default String toDebugString() {
         return null;
     }
@@ -191,7 +190,6 @@ public interface SolObject {
      *
      * @return Whether this object is made from metal.
      */
-    //TODO allow for more complex collision sounds. Or even better, completely rework the material system.
     Boolean isMetal();
 
     /**

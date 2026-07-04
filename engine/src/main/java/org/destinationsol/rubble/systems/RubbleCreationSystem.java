@@ -54,7 +54,8 @@ public class RubbleCreationSystem implements EventReceiver {
     public static final float SIZE_TO_RUBBLE_COUNT = 13f;
     public static final float MIN_SCALE = .07f;
     public static final float MAX_SCALE = .12f;
-    private static final float MAX_SPD = 40f;
+    // Matches RubbleBuilder.MAX_SPD - debris should drift out of the wreck, not rocket away.
+    private static final float MAX_SPD = 4f;
 
     @Inject
     protected RubbleBuilder rubbleBuilder;
@@ -111,7 +112,7 @@ public class RubbleCreationSystem implements EventReceiver {
 
             //Create graphics component
             RenderableElement element = new RenderableElement();
-            element.texture = SolRandom.randomElement(Assets.listTexturesMatching("engine:rubble.*"));
+            element.texture = SolRandom.randomElement(Assets.listTexturesMatching("engine:rubble_.*"));
             element.drawableLevel = DrawableLevel.PROJECTILES;
             element.graphicsOffset = new Vector2();
 
@@ -140,15 +141,21 @@ public class RubbleCreationSystem implements EventReceiver {
             sizeComponent.size = scale;
 
             //Create velocity component
+            // The component keeps this vector, so it must be a fresh instance -
+            // a pooled SolMath vector would be recycled while still referenced.
             Velocity velocityComponent = new Velocity();
-            Vector2 velocity = SolMath.fromAl(velocityAngle, SolRandom.randomFloat(MAX_SPD));
+            Vector2 velocity = new Vector2();
+            SolMath.fromAl(velocity, velocityAngle, SolRandom.randomFloat(MAX_SPD));
             velocity.add(vel.velocity);
             velocityComponent.velocity = velocity;
 
-            EntityRef entityRef = entitySystemManager.getEntityManager().createEntity(graphicsComponent, positionComponent,
-                    sizeComponent, angle, velocityComponent, new RubbleMesh(), health);
+            //Create angle component (each piece gets its own instance, not the parent's)
+            Angle angleComponent = new Angle();
+            angleComponent.setAngle(angle.getAngle());
 
-            SolMath.free(velocity);
+            EntityRef entityRef = entitySystemManager.getEntityManager().createEntity(graphicsComponent, positionComponent,
+                    sizeComponent, angleComponent, velocityComponent, new RubbleMesh(), health);
+
             entityRef.setComponent(new BodyLinked());
         }
     }

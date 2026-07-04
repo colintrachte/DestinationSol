@@ -85,7 +85,7 @@ public class MenuBackgroundShipManager {
         float angle = 105f;
         Vector2 position = new Vector2(4f, -4f);
         Vector2 velocity = new Vector2(.5f, 0);
-        velocity.rotate(angle);
+        velocity.rotateDeg(angle);
         Body body = shipMeshLoader.getBodyAndSprite(world, texture, scale, BodyDef.BodyType.DynamicBody, position, angle, new ArrayList<>(), Float.MAX_VALUE, DrawableLevel.BODIES);
         body.setLinearVelocity(velocity);
         Vector2 origin = shipMeshLoader.getOrigin(texture.name, scale);

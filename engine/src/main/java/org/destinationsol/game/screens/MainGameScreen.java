@@ -23,7 +23,6 @@ import org.destinationsol.game.SolGame;
 import org.destinationsol.game.context.Context;
 import org.destinationsol.ui.SolInputManager;
 import org.destinationsol.ui.SolUiBaseScreen;
-import org.destinationsol.ui.SolUiControl;
 import org.destinationsol.ui.SolUiScreen;
 import org.destinationsol.ui.UiDrawer;
 import org.destinationsol.ui.nui.NUIManager;

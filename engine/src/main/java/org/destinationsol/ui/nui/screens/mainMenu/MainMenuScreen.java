@@ -16,7 +16,6 @@
 package org.destinationsol.ui.nui.screens.mainMenu;
 
 import com.badlogic.gdx.Gdx;
-import org.destinationsol.GameOptions;
 import org.destinationsol.SolApplication;
 import org.destinationsol.assets.music.OggMusicManager;
 import org.destinationsol.game.WorldConfig;

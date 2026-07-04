@@ -22,7 +22,6 @@ import org.destinationsol.Const;
 import org.destinationsol.common.DebugCol;
 import org.destinationsol.common.SolColor;
 import org.destinationsol.common.SolMath;
-import org.destinationsol.game.context.Context;
 import org.destinationsol.game.drawables.Drawable;
 import org.destinationsol.game.drawables.DrawableManager;
 import org.destinationsol.game.drawables.FarDrawable;

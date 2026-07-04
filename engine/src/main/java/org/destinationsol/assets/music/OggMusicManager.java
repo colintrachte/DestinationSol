@@ -49,16 +49,12 @@ public class OggMusicManager {
     private String currentlyRegisteredModule;
     private String currentMusicSet = NO_MUSIC;
     private Logger logger = LoggerFactory.getLogger(OggMusicManager.class);
-    private final GameOptions options;
 
     /**
      * Registers engine music.
-     * TODO Make music registerable from modules, and then register this music through the new way.
      */
     @Inject
     public OggMusicManager(GameOptions options) {
-        this.options = options;
-
         registerMusic(GAME_MUSIC_SET, "engine:cimmerianDawn");
         registerMusic(GAME_MUSIC_SET, "engine:intoTheDark");
         registerMusic(GAME_MUSIC_SET, "engine:spaceTheatre");

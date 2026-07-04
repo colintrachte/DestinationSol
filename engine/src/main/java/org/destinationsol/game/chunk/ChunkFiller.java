@@ -69,7 +69,6 @@ public class ChunkFiller {
     private static final float ENEMY_MAX_ROT_SPD = 15f;
     private static final float DUST_SZ = .02f;
     private static final float MAX_A_SPD = .2f;
-    private static final float MAZE_ZONE_BORDER = 20;
     private final TextureAtlas.AtlasRegion dustTexture;
 
     public ChunkFiller() {
@@ -151,7 +150,6 @@ public class ChunkFiller {
             }
             return Optional.of(system.getConfig().envConfig);
         }
-        //TODO: Uncomment this section when there are mazes added to the SolarSystem
         /*
         Maze maze = planetManager.getNearestMaze(chunkCenter);
         float distanceToMaze = maze.getPos().dst(chunkCenter);

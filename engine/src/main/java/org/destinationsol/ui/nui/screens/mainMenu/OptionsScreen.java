@@ -92,6 +92,7 @@ public class OptionsScreen extends NUIScreenLayer {
                         inputMapScreen.setOperations(inputMapScreen.getInputMapKeyboardScreen());
                         break;
                     case MIXED:
+                    case MOUSE:
                         inputMapScreen.setOperations(inputMapScreen.getInputMapMixedScreen());
                         break;
                     case CONTROLLER:

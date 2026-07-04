@@ -83,7 +83,7 @@ public class ScreenToWorldMapper {
         Vector2 clickPositionCopy = clickPosition.cpy();
         Vector2 screenCenterOffset = getCenterOfScreenPercent(screenRatio);
         clickPositionCopy.add(screenCenterOffset.cpy().scl(-1.0f));
-        clickPositionCopy.rotate(camAngle);
+        clickPositionCopy.rotateDeg(camAngle);
         clickPositionCopy.add(screenCenterOffset);
         return clickPositionCopy;
     }

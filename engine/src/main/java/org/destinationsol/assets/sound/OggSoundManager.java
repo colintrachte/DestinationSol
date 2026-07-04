@@ -235,7 +235,6 @@ public class OggSoundManager implements UpdateAwareSystem {
      * <p>
      * Sound should not be played when its {@code loopTime > 0} and {@code loopTime} time units have not yet passed
      * since it was last played on the object.
-     * TODO: now handles even adding the sound to the list of looping sounds. Possibly extract that?
      *
      * @param source Object playing this sound.
      * @param sound  Sound to be played.

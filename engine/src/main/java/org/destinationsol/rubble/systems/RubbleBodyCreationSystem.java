@@ -20,7 +20,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
-import com.badlogic.gdx.physics.box2d.World;
 import org.destinationsol.Const;
 import org.destinationsol.body.events.BodyCreatedEvent;
 import org.destinationsol.body.events.GenerateBodyEvent;
@@ -108,7 +107,6 @@ public class RubbleBodyCreationSystem implements EventReceiver {
      * The originInformation is the information that was read from the JSON, which is used to calculate the graphics
      * offset information.
      */
-    //TODO separate this method into a separate system once CollisionMeshLoader is modular
     private void calculateGraphicsOffset(RenderableElement element) {
         Vector2 originInformation = collisionMeshLoader.getOrigin(element.texture.name, 1);
         element.graphicsOffset = new Vector2(originInformation.x - .5f, originInformation.y - .5f);

@@ -78,7 +78,6 @@ public class BeltConfigManager {
             configsToLoad.put(name, beltConfig);
         }
 
-        //TODO: determine why "engine" module is excluded
         Set<ResourceUrn> configUrnList = Assets.getAssetHelper().listAssets(Json.class, assetType, new Name("engine"));
 
         for (ResourceUrn configUrn : configUrnList) {
@@ -95,8 +94,6 @@ public class BeltConfigManager {
                 Map<String, BeltConfig> configsToLoad = hard ? hardConfigs : configs;
 
                 BeltConfig config = configsToLoad.get(name);
-
-                // TODO : Maybe add sanity checks for config?
 
                 //Load the configs for the enemy ships used in this belt. If there are no ships in the JSONArray, the resulting list will be empty
                 config.tempEnemies.addAll(ShipConfig.loadList(node.has("temporaryEnemies") ? node.getJSONArray("temporaryEnemies") : null, hullConfigManager, itemManager));

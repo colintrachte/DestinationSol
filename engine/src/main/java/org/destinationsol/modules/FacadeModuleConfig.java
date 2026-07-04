@@ -17,13 +17,6 @@ public interface FacadeModuleConfig {
     File getModulesPath();
 
     /**
-     * Determines if the game uses SecurityManager for gestalt sandboxing.
-     * This should usually be true, unless running on a platform that does not support it.
-     * @return true, if SecurityManager should be used, otherwise false.
-     */
-    boolean useSecurityManager();
-
-    /**
      * Returns a method used to construct the class loader for a given module, parent and permissions.
      * @return the class loader supplier method.
      */

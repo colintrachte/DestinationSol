@@ -16,7 +16,6 @@
 package org.destinationsol.ui.nui.screens;
 
 import org.destinationsol.game.console.Console;
-import org.destinationsol.game.console.ConsoleImpl;
 import org.destinationsol.game.console.CyclingTabCompletionEngine;
 import org.destinationsol.game.console.Message;
 import org.destinationsol.ui.nui.NUIScreenLayer;

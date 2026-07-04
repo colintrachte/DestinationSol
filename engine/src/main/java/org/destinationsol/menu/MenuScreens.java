@@ -40,7 +40,6 @@ public class MenuScreens {
     public final ModulesScreen modules;
 
     public MenuScreens(SolLayouts layouts, boolean mobile, GameOptions gameOptions, NUIManager nuiManager) {
-        MenuLayout menuLayout = layouts.menuLayout;
         main = (MainMenuScreen) nuiManager.createScreen("engine:mainMenuScreen");
         options = (OptionsScreen) nuiManager.createScreen("engine:optionsScreen");
         inputMapScreen = (InputMapScreen) nuiManager.createScreen("engine:inputMapScreen");

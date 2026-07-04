@@ -73,10 +73,6 @@ public class ShipControllerControl implements ShipUiControl {
 
         // setup the listener that prints events to the console
         Controllers.addListener(new ControllerListener() {
-            int indexOf(Controller controller) {
-                return Controllers.getControllers().indexOf(controller, true);
-            }
-
             @Override
             public void connected(Controller controller) {
             }
