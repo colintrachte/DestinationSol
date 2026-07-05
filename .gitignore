@@ -11,6 +11,9 @@ gwt
 modules/*
 modules/**/build.gradle
 !modules/core
+!modules/gravity
+!modules/astro-bodies
+!modules/vfx-vector
 !modules/subprojects.gradle
 libs/*
 !libs/subprojects.gradle

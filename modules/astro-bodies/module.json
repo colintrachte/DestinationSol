@@ -1,0 +1,6 @@
+{
+    "id" : "astrobodies",
+    "version" : "0.1.0",
+    "displayName" : "Astro Bodies",
+    "description" : "Procedural asteroid/space-body geometry ported from Astro Gravity: a random-perimeter ring triangulated into a textured mesh, with the same outline reused as exact Box2D collision. Pairs with the gravity and vfx modules."
+}

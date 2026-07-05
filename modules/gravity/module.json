@@ -1,0 +1,6 @@
+{
+    "id" : "gravity",
+    "version" : "0.1.0",
+    "displayName" : "Astro Gravity",
+    "description" : "Softened N-body gravity, orbital mechanics, and material properties ported from the Astro Gravity GameMaker project. Makes asteroids and debris fall toward planets and suns in a numerically stable way."
+}

@@ -1,0 +1,6 @@
+{
+    "id" : "vfx",
+    "version" : "0.1.0",
+    "displayName" : "Vector VFX",
+    "description" : "Geometry-drawn special effects ported from the GameMaker library: tapering path-ribbon trails and recursive metal-seeking forked lightning. Complements the engine's particle effects rather than replacing them."
+}
